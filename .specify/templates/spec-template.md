@@ -70,6 +70,9 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right edge cases.
+  For ShopPilot features, consider shopping-in-market constraints: interrupted
+  connectivity, duplicate products, missing prices, budget limits, and attempts
+  to access another user's data.
 -->
 
 - What happens when [boundary condition]?
@@ -89,16 +92,24 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-006**: System MUST ensure users can only view and change their own shopping data
+- **FR-007**: System MUST preserve relevant price and action history instead of replacing it
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-008**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-009**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
+
+<!--
+  ShopPilot domain entities commonly include ShoppingList, ShoppingListItem,
+  Product, and PriceHistory. Include only entities relevant to this feature and
+  describe behavior/outcomes in business terms, not implementation details.
+-->
 
 ## Success Criteria *(mandatory)*
 
@@ -126,3 +137,5 @@
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [Assumption about data ownership, e.g., "Shopping data is private to the user who created it"]
+- [Assumption about history, e.g., "Price changes are retained for future comparison and insights"]

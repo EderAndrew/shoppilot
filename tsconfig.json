@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "apps/mobile" },
+    { "path": "packages/shared" },
+    { "path": "packages/config" }
+  ]
+}

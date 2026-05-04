@@ -1,0 +1,24 @@
+{
+  "name": "shopPilot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "mobile:start": "pnpm --filter mobile start",
+    "mobile:android": "pnpm --filter mobile android",
+    "mobile:ios": "pnpm --filter mobile ios",
+    "mobile:web": "pnpm --filter mobile web",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm --filter mobile lint",
+    "test": "pnpm --filter mobile test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

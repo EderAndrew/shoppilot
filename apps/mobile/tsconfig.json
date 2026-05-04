@@ -1,0 +1,15 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shop-pilot/shared": ["../../packages/shared/src/index"],
+      "@shop-pilot/shared/*": ["../../packages/shared/src/*"],
+      "@shop-pilot/config": ["../../packages/config/src/index"],
+      "@shop-pilot/config/*": ["../../packages/config/src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}

@@ -3,7 +3,7 @@
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+**Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
 ## Summary
 
@@ -31,7 +31,31 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Answer each gate with PASS/FAIL plus a brief justification. FAIL entries MUST be
+resolved before implementation or documented in Complexity Tracking with the
+simpler alternative that was rejected.
+
+- **Layering**: Presentation, Application, Domain, and Infrastructure are
+  separated; Domain has no UI, storage, network, or framework dependency.
+- **Backend-ready data access**: UI does not call Supabase/database clients
+  directly; data access flows through services and explicit abstractions.
+- **Domain model**: Relevant behavior is modeled on ShoppingList,
+  ShoppingListItem, Product, PriceHistory, or another explicit domain entity.
+- **History and auditability**: Price changes and relevant user actions preserve
+  historical records or structured events instead of overwriting meaningful data.
+- **Security**: User-owned persisted data is scoped by user_id, RLS/policies are
+  planned where applicable, secrets stay out of frontend code, and validation is
+  enforced outside the UI.
+- **Typing and shared models**: TypeScript types are consistent across layers and
+  duplicate domain models are avoided.
+- **Observability**: Critical actions and suspicious/error states have structured
+  logging or event tracking appropriate for debugging and future analytics.
+- **Testing**: Domain behavior and ownership/security boundaries have focused
+  tests; persistence/authentication changes include validation coverage.
+- **Action-oriented UX**: Primary shopping flows are fast, low-step, responsive,
+  and provide immediate feedback for use in market contexts.
+- **AI readiness**: Data and events needed for future forecasts, suggestions, or
+  decision agents are captured when relevant to the feature.
 
 ## Project Structure
 
@@ -39,12 +63,12 @@
 
 ```text
 specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+├── plan.md              # This file (/speckit-plan command output)
+├── research.md          # Phase 0 output (/speckit-plan command)
+├── data-model.md        # Phase 1 output (/speckit-plan command)
+├── quickstart.md        # Phase 1 output (/speckit-plan command)
+├── contracts/           # Phase 1 output (/speckit-plan command)
+└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
 ### Source Code (repository root)
@@ -83,12 +107,17 @@ frontend/
 │   └── services/
 └── tests/
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
+# [REMOVE IF UNUSED] Option 3: Mobile MVP with future API
+src/
+├── presentation/        # Expo UI/screens/components; no business rules
+├── application/         # use cases and app services
+├── domain/              # entities, value objects, pure business rules
+└── infrastructure/      # Supabase/external adapters behind interfaces
 
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+tests/
+├── unit/                # domain and application tests
+├── integration/         # adapter and persistence/auth flows
+└── security/            # ownership, RLS/policy, validation checks
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
