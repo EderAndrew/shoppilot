@@ -18,9 +18,10 @@ export type ShoppingListCardProps = {
 export function ShoppingListCard({ list, onPress }: ShoppingListCardProps) {
   return (
     <Button
+      accessibilityLabel={`Abrir lista ${list.name}, orçamento ${formatMoney(list.budget)}, status ${statusLabels[list.status]}`}
       chromeless
       onPress={onPress}
-      style={{ justifyContent: "flex-start", padding: 0, height: "auto" }}
+      style={{ justifyContent: "flex-start", padding: 0, minHeight: 44, height: "auto" }}
     >
       <XStack
         gap="$3"

@@ -49,6 +49,7 @@ export function ProductForm({
           render={({ field, fieldState }) => (
             <>
               <Input
+                accessibilityLabel="Nome do produto"
                 id="name"
                 onBlur={field.onBlur}
                 onChangeText={field.onChange}
@@ -66,6 +67,7 @@ export function ProductForm({
           name="brand"
           render={({ field }) => (
             <Input
+              accessibilityLabel="Marca do produto"
               id="brand"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
@@ -81,6 +83,7 @@ export function ProductForm({
           name="barcode"
           render={({ field }) => (
             <Input
+              accessibilityLabel="Código de barras do produto"
               id="barcode"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
@@ -96,6 +99,7 @@ export function ProductForm({
           name="unit"
           render={({ field }) => (
             <Input
+              accessibilityLabel="Unidade do produto"
               id="unit"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
@@ -107,6 +111,7 @@ export function ProductForm({
       <DuplicateProductNotice candidates={duplicateCandidates.data ?? []} />
       {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
       <Button
+        accessibilityLabel={submitLabel}
         disabled={isSubmitting}
         onPress={form.handleSubmit((values) => {
           const parsed = productSchema.safeParse(values);

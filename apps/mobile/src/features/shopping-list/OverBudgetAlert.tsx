@@ -6,6 +6,8 @@ export function OverBudgetAlert({ isOverBudget }: { isOverBudget: boolean }) {
 
   return (
     <XStack
+      accessibilityLabel="Alerta de orçamento excedido"
+      accessibilityRole="alert"
       gap="$2"
       style={{
         alignItems: "center",

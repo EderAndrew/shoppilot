@@ -6,6 +6,8 @@ import {
   buildPriceRecordedEventMetadata,
   buildShoppingListEventMetadata,
 } from "../../src/domain/events/eventMetadata";
+import { createAppError } from "../../src/shared/errors/appError";
+import { sanitizeLogMetadata } from "../../src/shared/logging/logger";
 
 describe("user event metadata safety", () => {
   it("excludes tokens and raw session payloads", () => {
@@ -67,5 +69,30 @@ describe("user event metadata safety", () => {
         previous_price: 8,
       }),
     );
+  });
+
+  it("keeps user-facing errors and logs free of sensitive details", () => {
+    expect(
+      createAppError({
+        category: "unexpected",
+        message: "Supabase token leaked in provider message",
+      }).message,
+    ).toBe("Algo deu errado. Tente novamente.");
+
+    expect(
+      sanitizeLogMetadata({
+        authorization: "Bearer secret",
+        nested: {
+          message: "Bearer eyJhbGciOi.fake.signature",
+          safe: "list-1",
+        },
+      }),
+    ).toEqual({
+      authorization: "[redacted]",
+      nested: {
+        message: "[redacted]",
+        safe: "list-1",
+      },
+    });
   });
 });

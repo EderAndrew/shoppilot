@@ -26,6 +26,7 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
           render={({ field, fieldState }) => (
             <>
               <Input
+                accessibilityLabel="Nome da lista"
                 id="name"
                 onBlur={field.onBlur}
                 onChangeText={field.onChange}
@@ -44,6 +45,7 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
           render={({ field, fieldState }) => (
             <>
               <Input
+                accessibilityLabel="Orçamento"
                 id="budget"
                 keyboardType="decimal-pad"
                 onBlur={field.onBlur}
@@ -57,6 +59,7 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
       </YStack>
       {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
       <Button
+        accessibilityLabel="Criar lista"
         disabled={isSubmitting}
         onPress={form.handleSubmit((values) => {
           const parsed = shoppingListSchema.safeParse(values);

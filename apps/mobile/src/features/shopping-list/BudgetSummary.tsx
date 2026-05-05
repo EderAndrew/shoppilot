@@ -5,9 +5,17 @@ import { formatMoney, formatPercentage } from "@/shared/formatters/money";
 
 export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary }) {
   const progressValue = Math.min(summary.usedPercentage, 100);
+  const accessibilityLabel = `Resumo do orçamento. Gasto ${formatMoney(
+    summary.total,
+  )}. Restante ${formatMoney(summary.remaining)}. Orçamento ${formatMoney(summary.budget)}.`;
 
   return (
-    <YStack gap="$3" style={{ borderRadius: 8, borderWidth: 1, padding: 16 }}>
+    <YStack
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="summary"
+      gap="$3"
+      style={{ borderRadius: 8, borderWidth: 1, padding: 16 }}
+    >
       <XStack style={{ justifyContent: "space-between" }}>
         <YStack>
           <Text color="$gray10">Gasto</Text>
@@ -26,7 +34,10 @@ export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary 
           </Text>
         </YStack>
       </XStack>
-      <Progress value={progressValue}>
+      <Progress
+        accessibilityLabel={`Uso do orçamento: ${formatPercentage(summary.usedPercentage)}`}
+        value={progressValue}
+      >
         <Progress.Indicator
           style={{ backgroundColor: summary.isOverBudget ? "#dc2626" : "#16a34a" }}
         />

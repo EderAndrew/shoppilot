@@ -10,6 +10,7 @@ import {
   useCompleteShoppingListMutation,
   useShoppingListDetailsQuery,
 } from "../../../features/shopping-list/shoppingList.queries";
+import { useActiveListRealtime } from "../../../features/shopping-list/useActiveListRealtime";
 import { ShoppingListItemRow } from "../../../features/shopping-list-items/ShoppingListItemRow";
 import {
   useCheckShoppingListItemMutation,
@@ -29,6 +30,7 @@ export default function ShoppingListDetailsScreen() {
   const completeList = useCompleteShoppingListMutation();
   const removeItem = useRemoveShoppingListItemMutation(listId);
   const checkItem = useCheckShoppingListItemMutation(listId);
+  useActiveListRealtime(listId);
 
   const confirmCompleteList = () => {
     Alert.alert("Lista completa?", "Isso remove a lista da lista de compras ativas.", [

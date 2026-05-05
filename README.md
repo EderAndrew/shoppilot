@@ -15,14 +15,14 @@ data source later without changing user-facing behavior.
 
 Active plan: `specs/001-monthly-shopping-mvp/plan.md`
 
-| Area                                                               | Status    |
-| ------------------------------------------------------------------ | --------- |
-| Monorepo, Expo, Tamagui, TanStack Query, lint/test/typecheck setup | Done      |
-| Supabase schema and RLS migrations for Phase 1 tables              | Done      |
-| Auth, protected routes, shopping lists, item entry, budget totals  | Done      |
-| Product reuse, price history, and price comparison UI              | Done      |
-| User events for auditability and future AI readiness               | Done      |
-| Realtime, hardening, accessibility, and full MVP smoke coverage    | Remaining |
+| Area                                                               | Status |
+| ------------------------------------------------------------------ | ------ |
+| Monorepo, Expo, Tamagui, TanStack Query, lint/test/typecheck setup | Done   |
+| Supabase schema and RLS migrations for Phase 1 tables              | Done   |
+| Auth, protected routes, shopping lists, item entry, budget totals  | Done   |
+| Product reuse, price history, and price comparison UI              | Done   |
+| User events for auditability and future AI readiness               | Done   |
+| Realtime, hardening, accessibility, and full MVP smoke coverage    | Done   |
 
 Phase 1 focuses on single-user monthly grocery shopping. Barcode scanning, OCR,
 push notifications, full offline mode, multi-user households, LLM features, and
@@ -39,6 +39,8 @@ a dedicated backend are out of scope for this phase.
 - Compare current item prices against the latest previous product price.
 - Record append-only user events for critical list, item, product, and price
   actions using sanitized metadata.
+- Subscribe to the opened active list and patch the TanStack Query cache when
+  list/item changes arrive through Supabase Realtime.
 
 ## Tech Stack
 
@@ -129,6 +131,8 @@ Implementation notes:
   changes; they should not be edited as part of normal app behavior.
 - `user_events` rows should be appended after successful business actions only,
   with metadata sanitized before persistence or logging.
+- Realtime subscriptions should be opened only for the authenticated active list
+  detail screen and removed when that screen unmounts.
 
 RLS validation should cover:
 
@@ -170,6 +174,24 @@ Format files:
 ```bash
 pnpm format
 ```
+
+## Validation Status
+
+The `001-monthly-shopping-mvp` branch has Phase 6 implemented and validated with:
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm --filter mobile typecheck
+pnpm --filter mobile lint
+pnpm --filter mobile test
+```
+
+The mobile test suite currently passes with 26 test files and 96 tests. The
+repository-wide `pnpm format:check` still reports pre-existing formatting drift
+in `.agents`, `.specify`, Expo starter files, and planning artifacts; files
+touched for Phase 6 were formatted separately.
 
 ## Architecture Notes
 

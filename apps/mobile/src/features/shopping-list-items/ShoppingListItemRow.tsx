@@ -26,11 +26,13 @@ export function ShoppingListItemRow({
         chromeless
         icon={item.bought ? Check : Square}
         onPress={() => onToggleBought(!item.bought)}
+        style={{ minHeight: 44, minWidth: 44 }}
       />
       <Button
+        accessibilityLabel={`Editar ${item.productName ?? "item da lista"}`}
         chromeless
         onPress={onEdit}
-        style={{ flex: 1, justifyContent: "flex-start", padding: 0 }}
+        style={{ flex: 1, justifyContent: "flex-start", minHeight: 44, padding: 0 }}
       >
         <YStack flex={1}>
           <Text
@@ -45,7 +47,13 @@ export function ShoppingListItemRow({
         </YStack>
       </Button>
       <Text fontWeight="700">{formatMoney(item.totalPrice)}</Text>
-      <Button accessibilityLabel="Remover item" chromeless icon={Trash2} onPress={onRemove} />
+      <Button
+        accessibilityLabel={`Remover ${item.productName ?? "item da lista"}`}
+        chromeless
+        icon={Trash2}
+        onPress={onRemove}
+        style={{ minHeight: 44, minWidth: 44 }}
+      />
     </XStack>
   );
 }

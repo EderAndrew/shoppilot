@@ -47,6 +47,9 @@ type ProviderError = {
   status?: number;
 };
 
+const unsafeMessagePattern =
+  /token|secret|password|authorization|cookie|session|refresh|access|service_role|apikey|api_key|select |insert |update |delete |postgres|supabase|jwt/i;
+
 function isProviderError(error: unknown): error is ProviderError {
   return typeof error === "object" && error !== null;
 }
@@ -62,7 +65,11 @@ function mapProviderCategory(error: ProviderError): AppErrorCategory {
 }
 
 export function createAppError(input: AppErrorInput): AppError {
-  return new AppError(input);
+  const message = unsafeMessagePattern.test(input.message)
+    ? defaultMessages[input.category]
+    : input.message;
+
+  return new AppError({ ...input, message });
 }
 
 export function toAppError(

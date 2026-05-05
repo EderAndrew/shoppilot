@@ -19,6 +19,7 @@ export function ProductPicker({ onSelect, selectedProductId }: ProductPickerProp
       <Label htmlFor="productSearch">Produto</Label>
       <XStack gap="$2">
         <Input
+          accessibilityLabel="Buscar produtos salvos"
           flex={1}
           id="productSearch"
           onChangeText={setSearchTerm}
@@ -29,10 +30,11 @@ export function ProductPicker({ onSelect, selectedProductId }: ProductPickerProp
       <YStack gap="$2">
         {(products.data ?? []).slice(0, 5).map((product) => (
           <Button
+            accessibilityLabel={`Selecionar produto ${product.name}`}
             icon={selectedProductId === product.id ? Check : undefined}
             key={product.id}
             onPress={() => onSelect(product)}
-            style={{ justifyContent: "flex-start" }}
+            style={{ justifyContent: "flex-start", minHeight: 44 }}
             theme={selectedProductId === product.id ? "green" : undefined}
           >
             {product.name}

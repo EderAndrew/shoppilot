@@ -67,6 +67,7 @@ export function ShoppingListItemForm({
             render={({ field, fieldState }) => (
               <>
                 <Input
+                  accessibilityLabel="Nome do novo produto"
                   id="productName"
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
@@ -86,6 +87,7 @@ export function ShoppingListItemForm({
           render={({ field, fieldState }) => (
             <>
               <Input
+                accessibilityLabel="Quantidade"
                 id="quantity"
                 keyboardType="decimal-pad"
                 onBlur={field.onBlur}
@@ -105,6 +107,7 @@ export function ShoppingListItemForm({
           render={({ field, fieldState }) => (
             <>
               <Input
+                accessibilityLabel="Preço unitário"
                 id="unitPrice"
                 keyboardType="decimal-pad"
                 onBlur={field.onBlur}
@@ -121,6 +124,7 @@ export function ShoppingListItemForm({
       ) : null}
       {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
       <Button
+        accessibilityLabel={submitLabel}
         disabled={isSubmitting}
         onPress={form.handleSubmit((values) => {
           if (productNameRequired && !values.productId && !values.productName?.trim()) {

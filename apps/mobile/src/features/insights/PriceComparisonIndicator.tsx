@@ -25,6 +25,7 @@ export function PriceComparisonIndicator({ insight }: PriceComparisonIndicatorPr
 
   return (
     <YStack
+      accessibilityLabel={`Comparativo de preço: ${labels[insight.status]}`}
       gap="$1"
       style={{ borderColor: "#e5e7eb", borderRadius: 6, borderWidth: 1, padding: 12 }}
     >
