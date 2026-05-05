@@ -21,7 +21,7 @@ export function RegisterForm({ error, isSubmitting = false, onSubmit }: Register
       {(["email", "password", "confirmPassword"] as const).map((name) => (
         <YStack gap="$2" key={name}>
           <Label htmlFor={name}>
-            {name === "confirmPassword" ? "Confirm password" : name === "email" ? "Email" : "Password"}
+            {name === "confirmPassword" ? "Confirmar senha" : name === "email" ? "Email" : "Senha"}
           </Label>
           <Controller
             control={form.control}
@@ -57,7 +57,7 @@ export function RegisterForm({ error, isSubmitting = false, onSubmit }: Register
           }
         })}
       >
-        Create account
+        Criar conta
       </Button>
     </YStack>
   );

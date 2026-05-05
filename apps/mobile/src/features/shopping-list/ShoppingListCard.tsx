@@ -1,8 +1,14 @@
-import { ChevronRight } from "@tamagui/lucide-icons";
+import { ChevronRight } from "@tamagui/lucide-icons-2";
 import { Button, Text, XStack, YStack } from "tamagui";
 
 import type { ShoppingListRecord } from "@/application/ports/ShoppingListRepository";
 import { formatMoney } from "@/shared/formatters/money";
+
+const statusLabels: Record<ShoppingListRecord["status"], string> = {
+  active: "ativa",
+  archived: "arquivada",
+  completed: "concluída",
+};
 
 export type ShoppingListCardProps = {
   list: ShoppingListRecord;
@@ -11,7 +17,11 @@ export type ShoppingListCardProps = {
 
 export function ShoppingListCard({ list, onPress }: ShoppingListCardProps) {
   return (
-    <Button chromeless onPress={onPress} style={{ justifyContent: "flex-start", padding: 0 }}>
+    <Button
+      chromeless
+      onPress={onPress}
+      style={{ justifyContent: "flex-start", padding: 0, height: "auto" }}
+    >
       <XStack
         gap="$3"
         style={{
@@ -27,7 +37,7 @@ export function ShoppingListCard({ list, onPress }: ShoppingListCardProps) {
             {list.name}
           </Text>
           <Text color="$gray10">
-            {formatMoney(list.budget)} · {list.status}
+            {formatMoney(list.budget)} · {statusLabels[list.status]}
           </Text>
         </YStack>
         <ChevronRight size={20} />

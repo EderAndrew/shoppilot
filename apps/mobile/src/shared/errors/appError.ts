@@ -32,13 +32,13 @@ export class AppError extends Error {
 }
 
 const defaultMessages: Record<AppErrorCategory, string> = {
-  auth_required: "Sign in to continue.",
-  conflict: "This action conflicts with the current data.",
-  forbidden: "You do not have permission to do that.",
-  network_error: "Check your connection and try again.",
-  not_found: "We could not find that record.",
-  unexpected: "Something went wrong. Try again.",
-  validation_error: "Check the form and try again.",
+  auth_required: "Entre para continuar.",
+  conflict: "Esta ação entra em conflito com os dados atuais.",
+  forbidden: "Você não tem permissão para fazer isso.",
+  network_error: "Verifique sua conexão e tente novamente.",
+  not_found: "Não encontramos esse registro.",
+  unexpected: "Algo deu errado. Tente novamente.",
+  validation_error: "Verifique o formulário e tente novamente.",
 };
 
 type ProviderError = {

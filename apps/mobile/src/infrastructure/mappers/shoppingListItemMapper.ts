@@ -5,12 +5,14 @@ import type { Tables } from "../supabase/database.types";
 
 export function shoppingListItemRowToRecord(
   row: Tables<"shopping_list_items">,
+  productName?: string | null,
 ): ShoppingListItemRecord {
   return {
     bought: row.bought,
     createdAt: row.created_at,
     id: row.id,
     productId: row.product_id,
+    productName: productName ?? null,
     quantity: Number(row.quantity),
     shoppingListId: row.shopping_list_id,
     totalPrice: Number(row.total_price),

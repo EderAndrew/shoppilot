@@ -12,8 +12,11 @@ import { defaultRepositories } from "@/infrastructure/repositories/defaultReposi
 
 const listUseCases = {
   archive: new ArchiveShoppingList(defaultRepositories.shoppingLists),
-  complete: new CompleteShoppingList(defaultRepositories.shoppingLists),
-  create: new CreateShoppingList(defaultRepositories.shoppingLists),
+  complete: new CompleteShoppingList(
+    defaultRepositories.shoppingLists,
+    defaultRepositories.userEvents,
+  ),
+  create: new CreateShoppingList(defaultRepositories.shoppingLists, defaultRepositories.userEvents),
   details: new GetShoppingListDetails(defaultRepositories.shoppingLists),
   list: new ListShoppingLists(defaultRepositories.shoppingLists),
 };

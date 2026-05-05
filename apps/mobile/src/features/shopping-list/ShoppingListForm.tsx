@@ -19,20 +19,25 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
   return (
     <YStack gap="$3">
       <YStack gap="$2">
-        <Label htmlFor="name">List name</Label>
+        <Label htmlFor="name">Nome da lista</Label>
         <Controller
           control={form.control}
           name="name"
           render={({ field, fieldState }) => (
             <>
-              <Input id="name" onBlur={field.onBlur} onChangeText={field.onChange} value={field.value} />
+              <Input
+                id="name"
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                value={field.value}
+              />
               {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
             </>
           )}
         />
       </YStack>
       <YStack gap="$2">
-        <Label htmlFor="budget">Budget</Label>
+        <Label htmlFor="budget">Orçamento</Label>
         <Controller
           control={form.control}
           name="budget"
@@ -64,7 +69,7 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
           }
         })}
       >
-        Create list
+        Criar lista
       </Button>
     </YStack>
   );

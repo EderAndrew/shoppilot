@@ -74,6 +74,6 @@ export class SupabaseShoppingListItemRepository implements ShoppingListItemRepos
       .order("created_at", { ascending: true });
 
     if (error) mapSupabaseError(error);
-    return (data ?? []).map(shoppingListItemRowToRecord);
+    return (data ?? []).map((row) => shoppingListItemRowToRecord(row));
   }
 }

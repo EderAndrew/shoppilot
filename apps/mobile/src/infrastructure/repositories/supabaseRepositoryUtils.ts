@@ -7,7 +7,7 @@ export async function requireCurrentUserId(authRepository: AuthRepository): Prom
   if (!userId) {
     throw createAppError({
       category: "auth_required",
-      message: "Sign in to continue.",
+      message: "Entre para continuar.",
     });
   }
 

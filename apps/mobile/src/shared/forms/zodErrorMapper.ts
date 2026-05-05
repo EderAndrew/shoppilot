@@ -26,7 +26,7 @@ export function mapZodErrorToAppError(error: z.ZodError): AppError {
   return createAppError({
     category: "validation_error",
     cause: error,
-    message: firstIssue?.message ?? "Check the form and try again.",
+    message: firstIssue?.message ?? "Verifique o formulário e tente novamente.",
   });
 }
 
@@ -36,6 +36,6 @@ export function mapUnknownValidationError(error: unknown): AppError {
   return createAppError({
     category: "validation_error",
     cause: error,
-    message: "Check the form and try again.",
+    message: "Verifique o formulário e tente novamente.",
   });
 }

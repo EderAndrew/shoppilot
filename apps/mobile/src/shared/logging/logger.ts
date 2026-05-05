@@ -68,3 +68,7 @@ export const logger: Logger = {
   info: (message, metadata) => writeLog("info", message, metadata),
   warn: (message, metadata) => writeLog("warn", message, metadata),
 };
+
+export function logBusinessEvent(message: string, metadata?: LogMetadata): void {
+  logger.info(message, metadata);
+}
