@@ -13,8 +13,6 @@ data source later without changing user-facing behavior.
 
 ## Current Status
 
-Active plan: `specs/001-monthly-shopping-mvp/plan.md`
-
 | Area                                                               | Status |
 | ------------------------------------------------------------------ | ------ |
 | Monorepo, Expo, Tamagui, TanStack Query, lint/test/typecheck setup | Done   |
@@ -23,6 +21,7 @@ Active plan: `specs/001-monthly-shopping-mvp/plan.md`
 | Product reuse, price history, and price comparison UI              | Done   |
 | User events for auditability and future AI readiness               | Done   |
 | Realtime, hardening, accessibility, and full MVP smoke coverage    | Done   |
+| Mobile UI polish and shared design system foundation               | Done   |
 
 Phase 1 focuses on single-user monthly grocery shopping. Barcode scanning, OCR,
 push notifications, full offline mode, multi-user households, LLM features, and
@@ -46,7 +45,7 @@ a dedicated backend are out of scope for this phase.
 
 - pnpm workspace monorepo
 - Expo, React Native, Expo Router, and TypeScript
-- Tamagui for UI
+- Tamagui for UI (extended with a shared design system)
 - TanStack Query for server state
 - Zustand for small UI-only state
 - React Hook Form and Zod for forms and validation
@@ -63,7 +62,10 @@ apps/
     src/application/      Use cases, repository ports, and query keys
     src/infrastructure/   Supabase clients, repositories, mappers, realtime
     src/features/         Feature hooks, schemas, screens, and components
-    src/shared/           Providers, formatting, errors, logging, UI state
+    src/shared/
+      design-system/      Design tokens, themes, and Tamagui variants
+      ui/                 Shared reusable UI components
+      feedback/           Async state helpers
 packages/
   config/                 Shared environment parsing and config contracts
   shared/                 Shared domain/event types
@@ -71,7 +73,38 @@ supabase/
   migrations/             Phase 1 schema and RLS migrations
 specs/
   001-monthly-shopping-mvp/
+  002-mobile-ui-polish/
 ```
+
+## Design System
+
+`apps/mobile/src/shared/design-system/` defines the visual foundation:
+
+- **tokens.ts** — color palette, spacing scale, border radii, shadows, and
+  typography sizes.
+- **themes.ts** — Tamagui theme mapping light-mode semantic tokens to design
+  values.
+- **variants.ts** — shared component variants for size, intent, and state.
+
+`apps/mobile/src/shared/ui/` exports reusable interface primitives:
+
+| Component               | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `ScreenContainer`       | Standard screen layout with safe-area padding        |
+| `AppCard`               | Elevated content group with consistent border radius |
+| `AppButton`             | Primary, secondary, and destructive button styles    |
+| `AppInput`              | Text input with label, helper, and error states      |
+| `AppListItem`           | Scannable list row with left/right content slots     |
+| `SectionHeader`         | Section labels with consistent typography            |
+| `EmptyState`            | Empty-state layout with message and optional action  |
+| `LoadingState`          | Skeleton or spinner placeholder for async content    |
+| `ErrorState`            | Error message with optional retry action             |
+| `StatusState`           | Combined loading/empty/error switcher                |
+| `FloatingActionButton`  | Primary floating action for list screens             |
+| `InvalidFieldText`      | Field-level validation error text                    |
+
+All existing primary screens and feature components have been updated to use
+these shared primitives.
 
 ## Requirements
 
@@ -175,24 +208,6 @@ Format files:
 pnpm format
 ```
 
-## Validation Status
-
-The `001-monthly-shopping-mvp` branch has Phase 6 implemented and validated with:
-
-```bash
-pnpm typecheck
-pnpm lint
-pnpm test
-pnpm --filter mobile typecheck
-pnpm --filter mobile lint
-pnpm --filter mobile test
-```
-
-The mobile test suite currently passes with 26 test files and 96 tests. The
-repository-wide `pnpm format:check` still reports pre-existing formatting drift
-in `.agents`, `.specify`, Expo starter files, and planning artifacts; files
-touched for Phase 6 were formatted separately.
-
 ## Architecture Notes
 
 - UI routes and components call feature hooks and application use cases.
@@ -207,14 +222,18 @@ touched for Phase 6 were formatted separately.
   sections.
 - Errors and logs should avoid tokens, raw sessions, credentials, and sensitive
   metadata.
+- Shared UI primitives live in `src/shared/ui/`; design tokens and themes live
+  in `src/shared/design-system/`. Route and feature components should not
+  define one-off visual styles that duplicate these patterns.
 
 ## Feature Documentation
 
-- Feature spec: `specs/001-monthly-shopping-mvp/spec.md`
-- Implementation plan: `specs/001-monthly-shopping-mvp/plan.md`
+- Feature spec (Phase 1): `specs/001-monthly-shopping-mvp/spec.md`
+- Implementation plan (Phase 1): `specs/001-monthly-shopping-mvp/plan.md`
+- Feature spec (Phase 2 — UI Polish): `specs/002-mobile-ui-polish/spec.md`
+- Implementation plan (Phase 2): `specs/002-mobile-ui-polish/plan.md`
 - Data model: `specs/001-monthly-shopping-mvp/data-model.md`
 - Application contracts:
   `specs/001-monthly-shopping-mvp/contracts/application-contracts.md`
 - Supabase contract:
   `specs/001-monthly-shopping-mvp/contracts/supabase-contract.md`
-- Task list: `specs/001-monthly-shopping-mvp/tasks.md`

@@ -1,7 +1,13 @@
 import type { ProductRecord } from "@/application/ports/ProductRepository";
 import { Check } from "@tamagui/lucide-icons-2";
 import { useState } from "react";
-import { Button, Input, Label, Text, XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
+
+import { colors } from "@/shared/design-system/tokens";
+import { AppInput } from "@/shared/ui/AppInput";
+import { AppListItem } from "@/shared/ui/AppListItem";
+import { EmptyState } from "@/shared/ui/EmptyState";
+import { LoadingState } from "@/shared/ui/LoadingState";
 
 import { useProductsQuery } from "./product.queries";
 
@@ -16,36 +22,37 @@ export function ProductPicker({ onSelect, selectedProductId }: ProductPickerProp
 
   return (
     <YStack gap="$2">
-      <Label htmlFor="productSearch">Produto</Label>
-      <XStack gap="$2">
-        <Input
-          accessibilityLabel="Buscar produtos salvos"
-          flex={1}
-          id="productSearch"
-          onChangeText={setSearchTerm}
-          placeholder="Buscar produtos salvos"
-          value={searchTerm}
-        />
-      </XStack>
-      <YStack gap="$2">
-        {(products.data ?? []).slice(0, 5).map((product) => (
-          <Button
-            accessibilityLabel={`Selecionar produto ${product.name}`}
-            icon={selectedProductId === product.id ? Check : undefined}
-            key={product.id}
-            onPress={() => onSelect(product)}
-            style={{ justifyContent: "flex-start", minHeight: 44 }}
-            theme={selectedProductId === product.id ? "green" : undefined}
-          >
-            {product.name}
-            {product.brand ? `, ${product.brand}` : ""}
-            {product.unit ? ` (${product.unit})` : ""}
-          </Button>
-        ))}
-        {products.isSuccess && (products.data ?? []).length === 0 ? (
-          <Text color="$gray10">Nenhum produto reutilizável encontrado.</Text>
-        ) : null}
-      </YStack>
+      <AppInput
+        accessibilityLabel="Buscar produtos salvos"
+        id="productSearch"
+        label="Produto"
+        placeholder="Buscar produtos salvos"
+        onChangeText={setSearchTerm}
+        value={searchTerm}
+      />
+      {products.isLoading ? (
+        <LoadingState label="Buscando produtos..." />
+      ) : null}
+      {!products.isLoading ? (
+        <YStack>
+          {(products.data ?? []).slice(0, 5).map((product) => (
+            <AppListItem
+              accessibilityLabel={`Selecionar produto ${product.name}`}
+              key={product.id}
+              title={`${product.name}${product.brand ? `, ${product.brand}` : ""}${product.unit ? ` (${product.unit})` : ""}`}
+              trailing={
+                selectedProductId === product.id ? (
+                  <Check color={colors.success} size={18} />
+                ) : null
+              }
+              onPress={() => onSelect(product)}
+            />
+          ))}
+          {products.isSuccess && (products.data ?? []).length === 0 ? (
+            <EmptyState title="Nenhum produto reutilizável encontrado." />
+          ) : null}
+        </YStack>
+      ) : null}
     </YStack>
   );
 }

@@ -1,10 +1,13 @@
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Label, Text, YStack } from "tamagui";
+import { YStack } from "tamagui";
 
 import { PriceComparisonIndicator } from "@/features/insights/PriceComparisonIndicator";
 import { ProductPicker } from "@/features/products/ProductPicker";
 import { usePriceInsightQuery } from "@/features/price-history/priceHistory.queries";
 import { getSafeErrorMessage } from "@/shared/errors/appError";
+import { AppButton } from "@/shared/ui/AppButton";
+import { AppInput } from "@/shared/ui/AppInput";
+import { StatusState } from "@/shared/ui/StatusState";
 
 import { shoppingListItemSchema, type ShoppingListItemFormValues } from "./item.schemas";
 
@@ -59,73 +62,62 @@ export function ShoppingListItemForm({
         />
       ) : null}
       {productNameRequired ? (
-        <YStack gap="$2">
-          <Label htmlFor="productName">Nome do novo produto</Label>
-          <Controller
-            control={form.control}
-            name="productName"
-            render={({ field, fieldState }) => (
-              <>
-                <Input
-                  accessibilityLabel="Nome do novo produto"
-                  id="productName"
-                  onBlur={field.onBlur}
-                  onChangeText={field.onChange}
-                  value={field.value ?? ""}
-                />
-                {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-              </>
-            )}
-          />
-        </YStack>
+        <Controller
+          control={form.control}
+          name="productName"
+          render={({ field, fieldState }) => (
+            <AppInput
+              accessibilityLabel="Nome do novo produto"
+              error={fieldState.error?.message}
+              id="productName"
+              label="Nome do novo produto"
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              value={field.value ?? ""}
+            />
+          )}
+        />
       ) : null}
-      <YStack gap="$2">
-        <Label htmlFor="quantity">Quantidade</Label>
-        <Controller
-          control={form.control}
-          name="quantity"
-          render={({ field, fieldState }) => (
-            <>
-              <Input
-                accessibilityLabel="Quantidade"
-                id="quantity"
-                keyboardType="decimal-pad"
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                value={String(field.value || "")}
-              />
-              {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-            </>
-          )}
-        />
-      </YStack>
-      <YStack gap="$2">
-        <Label htmlFor="unitPrice">Preço unitário</Label>
-        <Controller
-          control={form.control}
-          name="unitPrice"
-          render={({ field, fieldState }) => (
-            <>
-              <Input
-                accessibilityLabel="Preço unitário"
-                id="unitPrice"
-                keyboardType="decimal-pad"
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                value={String(field.value || "")}
-              />
-              {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-            </>
-          )}
-        />
-      </YStack>
+      <Controller
+        control={form.control}
+        name="quantity"
+        render={({ field, fieldState }) => (
+          <AppInput
+            accessibilityLabel="Quantidade"
+            error={fieldState.error?.message}
+            id="quantity"
+            keyboardType="decimal-pad"
+            label="Quantidade"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={String(field.value || "")}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="unitPrice"
+        render={({ field, fieldState }) => (
+          <AppInput
+            accessibilityLabel="Preço unitário"
+            error={fieldState.error?.message}
+            id="unitPrice"
+            keyboardType="decimal-pad"
+            label="Preço unitário"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={String(field.value || "")}
+          />
+        )}
+      />
       {selectedProductId && unitPrice > 0 ? (
         <PriceComparisonIndicator insight={priceInsight.data} />
       ) : null}
-      {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
-      <Button
+      {error ? <StatusState message={getSafeErrorMessage(error)} tone="error" /> : null}
+      <AppButton
         accessibilityLabel={submitLabel}
-        disabled={isSubmitting}
+        fullWidth
+        loading={isSubmitting}
         onPress={form.handleSubmit((values) => {
           if (productNameRequired && !values.productId && !values.productName?.trim()) {
             form.setError("productName", { message: "O nome do produto é obrigatório." });
@@ -151,7 +143,7 @@ export function ShoppingListItemForm({
         })}
       >
         {submitLabel}
-      </Button>
+      </AppButton>
     </YStack>
   );
 }

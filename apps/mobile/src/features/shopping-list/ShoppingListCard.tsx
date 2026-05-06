@@ -1,8 +1,10 @@
 import { ChevronRight } from "@tamagui/lucide-icons-2";
-import { Button, Text, XStack, YStack } from "tamagui";
+import { Text, XStack, YStack } from "tamagui";
 
 import type { ShoppingListRecord } from "@/application/ports/ShoppingListRepository";
 import { formatMoney } from "@/shared/formatters/money";
+import { AppCard } from "@/shared/ui/AppCard";
+import { colors, typography } from "@/shared/design-system/tokens";
 
 const statusLabels: Record<ShoppingListRecord["status"], string> = {
   active: "ativa",
@@ -17,32 +19,23 @@ export type ShoppingListCardProps = {
 
 export function ShoppingListCard({ list, onPress }: ShoppingListCardProps) {
   return (
-    <Button
+    <AppCard
       accessibilityLabel={`Abrir lista ${list.name}, orçamento ${formatMoney(list.budget)}, status ${statusLabels[list.status]}`}
-      chromeless
+      elevated
+      variant="actionable"
       onPress={onPress}
-      style={{ justifyContent: "flex-start", padding: 0, minHeight: 44, height: "auto" }}
     >
-      <XStack
-        gap="$3"
-        style={{
-          alignItems: "center",
-          borderRadius: 8,
-          borderWidth: 1,
-          flex: 1,
-          padding: 16,
-        }}
-      >
+      <XStack alignItems="center" gap={8}>
         <YStack flex={1} gap="$1">
-          <Text fontSize="$6" fontWeight="700">
+          <Text numberOfLines={2} {...typography.bodyStrong} color={colors.textPrimary}>
             {list.name}
           </Text>
-          <Text color="$gray10">
+          <Text numberOfLines={1} {...typography.caption} color={colors.textSecondary}>
             {formatMoney(list.budget)} · {statusLabels[list.status]}
           </Text>
         </YStack>
-        <ChevronRight size={20} />
+        <ChevronRight color={colors.textSecondary} size={20} />
       </XStack>
-    </Button>
+    </AppCard>
   );
 }

@@ -1,19 +1,19 @@
-import { type Href, useRouter } from "expo-router";
-import { ScrollView, Text, YStack } from "tamagui";
+import { type Href, Stack, useRouter } from "expo-router";
 
 import { ProductForm } from "../../../features/products/ProductForm";
 import { useCreateProductMutation } from "../../../features/products/product.queries";
+import { ScreenContainer } from "../../../shared/ui/ScreenContainer";
+import { SectionHeader } from "../../../shared/ui/SectionHeader";
 
 export default function NewProductScreen() {
   const router = useRouter();
   const createProduct = useCreateProductMutation();
 
   return (
-    <ScrollView flex={1}>
-      <YStack gap="$4" style={{ padding: 16 }}>
-        <Text fontSize="$8" fontWeight="700">
-          Novo produto
-        </Text>
+    <>
+      <Stack.Screen options={{ title: "Novo produto" }} />
+      <ScreenContainer scrollable>
+        <SectionHeader title="Novo produto" />
         <ProductForm
           error={createProduct.error}
           isSubmitting={createProduct.isPending}
@@ -24,7 +24,7 @@ export default function NewProductScreen() {
             })
           }
         />
-      </YStack>
-    </ScrollView>
+      </ScreenContainer>
+    </>
   );
 }

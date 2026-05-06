@@ -2,6 +2,10 @@ import type { PriceInsight } from "@/domain/services/priceInsight";
 import { formatMoney, formatSignedMoneyDifference } from "@/shared/formatters/money";
 import { Text, YStack } from "tamagui";
 
+import { colors, typography } from "@/shared/design-system/tokens";
+import { AppCard } from "@/shared/ui/AppCard";
+import type { CardVariant } from "@/shared/design-system/variants";
+
 const labels: Record<PriceInsight["status"], string> = {
   cheaper: "Mais barato que o último preço",
   more_expensive: "Mais caro que o último preço",
@@ -9,11 +13,17 @@ const labels: Record<PriceInsight["status"], string> = {
   unchanged: "Igual ao último preço",
 };
 
-function statusColor(status: PriceInsight["status"]) {
-  if (status === "cheaper") return "$green10" as const;
-  if (status === "more_expensive") return "$red10" as const;
-  if (status === "unchanged") return "$blue10" as const;
-  return "$gray10" as const;
+function statusVariant(status: PriceInsight["status"]): CardVariant {
+  if (status === "cheaper") return "success";
+  if (status === "more_expensive") return "danger";
+  return "default";
+}
+
+function statusTextColor(status: PriceInsight["status"]): string {
+  if (status === "cheaper") return colors.success;
+  if (status === "more_expensive") return colors.danger;
+  if (status === "unchanged") return colors.primary;
+  return colors.textSecondary;
 }
 
 export type PriceComparisonIndicatorProps = {
@@ -24,21 +34,22 @@ export function PriceComparisonIndicator({ insight }: PriceComparisonIndicatorPr
   if (!insight) return null;
 
   return (
-    <YStack
-      accessibilityLabel={`Comparativo de preço: ${labels[insight.status]}`}
-      gap="$1"
-      style={{ borderColor: "#e5e7eb", borderRadius: 6, borderWidth: 1, padding: 12 }}
-    >
-      <Text color={statusColor(insight.status)} fontWeight="700">
-        {labels[insight.status]}
-      </Text>
-      {insight.previousPrice !== null ? (
-        <Text color="$gray11">
-          Anterior {formatMoney(insight.previousPrice)}. Diferença{" "}
-          {formatSignedMoneyDifference(insight.absoluteDifference ?? 0)} (
-          {insight.percentageDifference?.toFixed(2)}%).
+    <AppCard variant={statusVariant(insight.status)}>
+      <YStack
+        accessibilityLabel={`Comparativo de preço: ${labels[insight.status]}`}
+        gap="$1"
+      >
+        <Text {...typography.bodyStrong} color={statusTextColor(insight.status)}>
+          {labels[insight.status]}
         </Text>
-      ) : null}
-    </YStack>
+        {insight.previousPrice !== null ? (
+          <Text {...typography.caption} color={colors.textSecondary}>
+            Anterior {formatMoney(insight.previousPrice)}. Diferença{" "}
+            {formatSignedMoneyDifference(insight.absoluteDifference ?? 0)} (
+            {insight.percentageDifference?.toFixed(2)}%).
+          </Text>
+        ) : null}
+      </YStack>
+    </AppCard>
   );
 }
