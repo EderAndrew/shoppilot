@@ -4,13 +4,13 @@ const emailSchema = z
   .string()
   .trim()
   .toLowerCase()
-  .email("Enter a valid email address.")
-  .max(254, "Email is too long.");
+  .email("Informe um email válido.")
+  .max(254, "Email muito longo.");
 
 const passwordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters.")
-  .max(128, "Password is too long.");
+  .min(8, "A senha deve ter pelo menos 8 caracteres.")
+  .max(128, "Senha muito longa.");
 
 export const loginSchema = z.object({
   email: emailSchema,
@@ -24,7 +24,7 @@ export const registerSchema = z
     confirmPassword: z.string(),
   })
   .refine((value) => value.password === value.confirmPassword, {
-    message: "Passwords must match.",
+    message: "As senhas devem ser iguais.",
     path: ["confirmPassword"],
   });
 

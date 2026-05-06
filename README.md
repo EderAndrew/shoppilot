@@ -1,9 +1,10 @@
 # ShopPilot
 
 ShopPilot is a mobile-first grocery shopping MVP for monthly supermarket runs.
-The app helps authenticated users create shopping lists, add priced items,
-track budget totals, and preserve the data needed for future price insights and
-agentic shopping assistance.
+The app helps authenticated users create shopping lists, reuse products, add
+priced items, compare current prices with previous purchases, track budget
+totals, and preserve structured audit data for future agentic shopping
+assistance.
 
 The current implementation target is the Expo mobile app in `apps/mobile`.
 Supabase is used directly for the MVP through infrastructure adapters, with the
@@ -14,17 +15,32 @@ data source later without changing user-facing behavior.
 
 Active plan: `specs/001-monthly-shopping-mvp/plan.md`
 
-| Area                                                               | Status  |
-| ------------------------------------------------------------------ | ------- |
-| Monorepo, Expo, Tamagui, TanStack Query, lint/test/typecheck setup | Done    |
-| Supabase schema and RLS migrations for Phase 1 tables              | Done    |
-| Auth, protected routes, shopping lists, item entry, budget totals  | Done    |
-| Product reuse, price history, and price comparison UI              | Planned |
-| User events, Realtime, hardening, and full MVP smoke coverage      | Planned |
+| Area                                                               | Status |
+| ------------------------------------------------------------------ | ------ |
+| Monorepo, Expo, Tamagui, TanStack Query, lint/test/typecheck setup | Done   |
+| Supabase schema and RLS migrations for Phase 1 tables              | Done   |
+| Auth, protected routes, shopping lists, item entry, budget totals  | Done   |
+| Product reuse, price history, and price comparison UI              | Done   |
+| User events for auditability and future AI readiness               | Done   |
+| Realtime, hardening, accessibility, and full MVP smoke coverage    | Done   |
 
 Phase 1 focuses on single-user monthly grocery shopping. Barcode scanning, OCR,
 push notifications, full offline mode, multi-user households, LLM features, and
 a dedicated backend are out of scope for this phase.
+
+## MVP Capabilities
+
+- Register, login, logout, and restore authenticated mobile sessions.
+- Create, complete, and archive monthly shopping lists.
+- Add, edit, remove, and check priced shopping list items.
+- Track list total, remaining budget, used percentage, and over-budget state.
+- Create and search reusable products with duplicate guidance.
+- Record append-only price history when item prices are created or changed.
+- Compare current item prices against the latest previous product price.
+- Record append-only user events for critical list, item, product, and price
+  actions using sanitized metadata.
+- Subscribe to the opened active list and patch the TanStack Query cache when
+  list/item changes arrive through Supabase Realtime.
 
 ## Tech Stack
 
@@ -104,6 +120,28 @@ Each table is scoped by `user_id`. RLS policies must keep reads and writes
 limited to `auth.uid()`. `price_history` and `user_events` are append-only in
 normal app flows.
 
+Implementation notes:
+
+- Run the mobile app with only `EXPO_PUBLIC_SUPABASE_URL` and
+  `EXPO_PUBLIC_SUPABASE_ANON_KEY` configured.
+- Keep all direct Supabase calls inside `apps/mobile/src/infrastructure`.
+- Repository adapters must set or preserve the authenticated user's ownership
+  fields before persistence.
+- `price_history` rows should be appended from item price creation or price
+  changes; they should not be edited as part of normal app behavior.
+- `user_events` rows should be appended after successful business actions only,
+  with metadata sanitized before persistence or logging.
+- Realtime subscriptions should be opened only for the authenticated active list
+  detail screen and removed when that screen unmounts.
+
+RLS validation should cover:
+
+- a user can read and mutate only their own mutable rows;
+- cross-user list, product, item, history, and event access is denied;
+- inserts require `user_id = auth.uid()`;
+- ownership cannot be reassigned through updates;
+- append-only tables do not expose normal update/delete app flows.
+
 ## Development Commands
 
 Run the mobile app:
@@ -124,11 +162,36 @@ pnpm test
 pnpm format:check
 ```
 
+Run mobile tests directly when iterating on the app:
+
+```bash
+pnpm --filter mobile test
+pnpm --filter mobile test:watch
+```
+
 Format files:
 
 ```bash
 pnpm format
 ```
+
+## Validation Status
+
+The `001-monthly-shopping-mvp` branch has Phase 6 implemented and validated with:
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm --filter mobile typecheck
+pnpm --filter mobile lint
+pnpm --filter mobile test
+```
+
+The mobile test suite currently passes with 26 test files and 96 tests. The
+repository-wide `pnpm format:check` still reports pre-existing formatting drift
+in `.agents`, `.specify`, Expo starter files, and planning artifacts; files
+touched for Phase 6 were formatted separately.
 
 ## Architecture Notes
 
@@ -136,6 +199,9 @@ pnpm format
 - Use cases depend on repository interfaces, not directly on Supabase.
 - Supabase-specific logic stays in `apps/mobile/src/infrastructure`.
 - Domain code stays framework-free and owns budget, total, and validation rules.
+- Price insight calculations live in domain services and are surfaced through
+  feature hooks, not directly from route components.
+- Critical successful actions should append `UserEvent` rows with safe metadata.
 - Shopping server state belongs in TanStack Query, not Zustand.
 - Zustand is reserved for transient UI state such as selected list and collapsed
   sections.

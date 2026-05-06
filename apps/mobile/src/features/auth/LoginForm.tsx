@@ -39,7 +39,7 @@ export function LoginForm({ error, isSubmitting = false, onSubmit }: LoginFormPr
         />
       </YStack>
       <YStack gap="$2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">Senha</Label>
         <Controller
           control={form.control}
           name="password"
@@ -71,7 +71,7 @@ export function LoginForm({ error, isSubmitting = false, onSubmit }: LoginFormPr
           }
         })}
       >
-        Sign in
+        Entrar
       </Button>
     </YStack>
   );

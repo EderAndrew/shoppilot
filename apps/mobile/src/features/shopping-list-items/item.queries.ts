@@ -13,18 +13,24 @@ const itemUseCases = {
   add: new AddShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
+    defaultRepositories.priceHistory,
+    defaultRepositories.userEvents,
   ),
   check: new CheckShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
+    defaultRepositories.userEvents,
   ),
   remove: new RemoveShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
+    defaultRepositories.userEvents,
   ),
   update: new UpdateShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
+    defaultRepositories.priceHistory,
+    defaultRepositories.userEvents,
   ),
 };
 
@@ -34,6 +40,7 @@ function useInvalidateList(listId: string) {
   return async () => {
     await queryClient.invalidateQueries({ queryKey: queryKeys.shoppingLists.detail(listId) });
     await queryClient.invalidateQueries({ queryKey: queryKeys.shoppingLists.items(listId) });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.products.all() });
   };
 }
 

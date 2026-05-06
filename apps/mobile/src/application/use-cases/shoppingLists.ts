@@ -1,6 +1,8 @@
 import { ShoppingList } from "@/domain/entities/ShoppingList";
 import { ShoppingListItem } from "@/domain/entities/ShoppingListItem";
+import { buildShoppingListEventMetadata } from "@/domain/events/eventMetadata";
 import type { ShoppingListBudgetSummary } from "@/domain/services/budget";
+import { logBusinessEvent } from "@/shared/logging/logger";
 import { createAppError } from "@/shared/errors/appError";
 
 import type {
@@ -9,6 +11,7 @@ import type {
   ShoppingListRecord,
   ShoppingListRepository,
 } from "../ports/ShoppingListRepository";
+import type { UserEventRepository } from "../ports/UserEventRepository";
 
 export type ShoppingListUseCaseResult = {
   list: ShoppingListRecord;
@@ -26,7 +29,10 @@ function toBudgetSummary(details: ShoppingListDetails): ShoppingListBudgetSummar
 }
 
 export class CreateShoppingList {
-  constructor(private readonly shoppingLists: ShoppingListRepository) {}
+  constructor(
+    private readonly shoppingLists: ShoppingListRepository,
+    private readonly userEvents?: UserEventRepository,
+  ) {}
 
   async execute(input: CreateShoppingListInput): Promise<ShoppingListUseCaseResult> {
     const list = new ShoppingList({
@@ -44,6 +50,19 @@ export class CreateShoppingList {
       budget: list.budget.toNumber(),
       name: list.name,
     });
+
+    if (this.userEvents) {
+      await this.userEvents.append({
+        entityId: created.id,
+        entityType: "shopping_list",
+        eventType: "SHOPPING_LIST_CREATED",
+        metadata: buildShoppingListEventMetadata(created),
+      });
+      logBusinessEvent("Lista de compras criada", {
+        entityId: created.id,
+        eventType: "SHOPPING_LIST_CREATED",
+      });
+    }
 
     return {
       budgetSummary: new ShoppingList(created).calculateBudget([]),
@@ -66,7 +85,7 @@ export class GetShoppingListDetails {
   async execute(listId: string): Promise<ShoppingListDetailsResult> {
     const details = await this.shoppingLists.getDetails(listId);
     if (!details) {
-      throw createAppError({ category: "not_found", message: "We could not find that record." });
+      throw createAppError({ category: "not_found", message: "Não encontramos esse registro." });
     }
 
     return {
@@ -77,10 +96,28 @@ export class GetShoppingListDetails {
 }
 
 export class CompleteShoppingList {
-  constructor(private readonly shoppingLists: ShoppingListRepository) {}
+  constructor(
+    private readonly shoppingLists: ShoppingListRepository,
+    private readonly userEvents?: UserEventRepository,
+  ) {}
 
   async execute(listId: string): Promise<ShoppingListRecord> {
-    return this.shoppingLists.complete({ listId });
+    const completed = await this.shoppingLists.complete({ listId });
+
+    if (this.userEvents) {
+      await this.userEvents.append({
+        entityId: completed.id,
+        entityType: "shopping_list",
+        eventType: "SHOPPING_LIST_COMPLETED",
+        metadata: buildShoppingListEventMetadata(completed),
+      });
+      logBusinessEvent("Lista de compras concluída", {
+        entityId: completed.id,
+        eventType: "SHOPPING_LIST_COMPLETED",
+      });
+    }
+
+    return completed;
   }
 }
 

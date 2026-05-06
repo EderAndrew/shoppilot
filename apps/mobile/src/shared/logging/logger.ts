@@ -1,5 +1,7 @@
 const sensitiveKeyPattern =
   /token|secret|password|authorization|cookie|session|refresh|access|apikey|api_key|service_role/i;
+const sensitiveStringPattern =
+  /bearer\s+[a-z0-9._-]+|eyj[a-z0-9_-]+\.[a-z0-9_-]+\.[a-z0-9_-]+|service[_-]?role|refresh[_-]?token|access[_-]?token/i;
 
 export type LogLevel = "debug" | "info" | "warn" | "error";
 
@@ -21,6 +23,9 @@ export type Logger = {
 
 function sanitizeMetadataValue(value: LogMetadata, depth = 0): LogMetadata {
   if (value === null || value === undefined) return value;
+  if (typeof value === "string") {
+    return sensitiveStringPattern.test(value) ? "[redacted]" : value;
+  }
   if (typeof value !== "object") return value;
   if (depth >= 4) return "[redacted-depth]";
 
@@ -68,3 +73,7 @@ export const logger: Logger = {
   info: (message, metadata) => writeLog("info", message, metadata),
   warn: (message, metadata) => writeLog("warn", message, metadata),
 };
+
+export function logBusinessEvent(message: string, metadata?: LogMetadata): void {
+  logger.info(message, metadata);
+}

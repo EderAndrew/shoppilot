@@ -17,10 +17,10 @@ export default function EditShoppingListItemScreen() {
     <ScrollView flex={1}>
       <YStack gap="$4" style={{ padding: 16 }}>
         <Text fontSize="$8" fontWeight="700">
-          Edit item
+          Editar item
         </Text>
         <AsyncState
-          emptyMessage="Item not found."
+          emptyMessage="Item não encontrado."
           error={details.error}
           isEmpty={details.isSuccess && !item}
           isLoading={details.isLoading}
@@ -35,6 +35,7 @@ export default function EditShoppingListItemScreen() {
                 shoppingListId: listId,
                 unitPrice: item.unitPrice,
               }}
+              enableProductPicker={false}
               error={updateItem.error}
               isSubmitting={updateItem.isPending}
               onSubmit={(values) =>

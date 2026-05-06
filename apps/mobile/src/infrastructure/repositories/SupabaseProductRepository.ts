@@ -6,6 +6,7 @@ import type {
   ProductRepository,
   ProductSearchInput,
 } from "@/application/ports/ProductRepository";
+import { Product } from "@/domain/entities/Product";
 
 import { productRowToRecord } from "../mappers/productMapper";
 import { supabase, type ShopPilotSupabaseClient } from "../supabase/client";
@@ -65,6 +66,22 @@ export class SupabaseProductRepository implements ProductRepository {
   }
 
   async findDuplicateCandidates(input: ProductDuplicateCandidateInput): Promise<ProductRecord[]> {
-    return this.search({ limit: 10, searchTerm: input.barcode ?? input.name });
+    if (input.barcode?.trim()) {
+      await requireCurrentUserId(this.authRepository);
+      const { data, error } = await this.client
+        .from("products")
+        .select()
+        .eq("barcode", input.barcode.trim())
+        .limit(20);
+
+      if (error) mapSupabaseError(error);
+      return (data ?? []).map(productRowToRecord);
+    }
+
+    const candidates = await this.search({ limit: 20, searchTerm: input.name });
+
+    return candidates.filter((candidate) =>
+      new Product(candidate).matchesDuplicateCandidate(input),
+    );
   }
 }

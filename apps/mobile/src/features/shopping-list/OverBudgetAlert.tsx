@@ -1,4 +1,4 @@
-import { AlertTriangle } from "@tamagui/lucide-icons";
+import { AlertTriangle } from "@tamagui/lucide-icons-2";
 import { Text, XStack } from "tamagui";
 
 export function OverBudgetAlert({ isOverBudget }: { isOverBudget: boolean }) {
@@ -6,6 +6,8 @@ export function OverBudgetAlert({ isOverBudget }: { isOverBudget: boolean }) {
 
   return (
     <XStack
+      accessibilityLabel="Alerta de orçamento excedido"
+      accessibilityRole="alert"
       gap="$2"
       style={{
         alignItems: "center",
@@ -18,7 +20,7 @@ export function OverBudgetAlert({ isOverBudget }: { isOverBudget: boolean }) {
     >
       <AlertTriangle color="$red10" size={18} />
       <Text color="$red11" flex={1}>
-        This list is over budget.
+        Esta lista está acima do orçamento.
       </Text>
     </XStack>
   );

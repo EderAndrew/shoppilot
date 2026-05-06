@@ -1,4 +1,4 @@
-import { LogOut } from "@tamagui/lucide-icons";
+import { LogOut } from "@tamagui/lucide-icons-2";
 import { Redirect, Stack, type Href } from "expo-router";
 import { Button } from "tamagui";
 
@@ -17,7 +17,7 @@ export default function ProtectedAppLayout() {
       screenOptions={{
         headerRight: () => (
           <Button
-            accessibilityLabel="Sign out"
+            accessibilityLabel="Sair"
             chromeless
             icon={LogOut}
             onPress={() => logout.mutate()}

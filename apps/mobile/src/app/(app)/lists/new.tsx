@@ -1,4 +1,4 @@
-import { type Href, useRouter } from "expo-router";
+import { type Href, Stack, useRouter } from "expo-router";
 import { ScrollView, Text, YStack } from "tamagui";
 
 import { ShoppingListForm } from "../../../features/shopping-list/ShoppingListForm";
@@ -10,9 +10,14 @@ export default function NewShoppingListScreen() {
 
   return (
     <ScrollView flex={1}>
+      <Stack.Screen
+        options={{
+          title: "Nova lista",
+        }}
+      />
       <YStack gap="$4" style={{ padding: 16 }}>
         <Text fontSize="$8" fontWeight="700">
-          New list
+          Nova lista
         </Text>
         <ShoppingListForm
           error={createList.error}

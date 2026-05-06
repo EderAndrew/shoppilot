@@ -16,14 +16,14 @@ export type AsyncStateProps = PropsWithChildren<{
 
 export function AsyncState({
   children,
-  emptyMessage = "Nothing to show yet.",
+  emptyMessage = "Nada para mostrar ainda.",
   error,
   fallback,
   isEmpty = false,
   isLoading = false,
-  loadingLabel = "Loading...",
+  loadingLabel = "Carregando...",
   onRetry,
-  retryLabel = "Try again",
+  retryLabel = "Tentar novamente",
 }: AsyncStateProps) {
   if (isLoading) {
     return (
@@ -44,10 +44,12 @@ export function AsyncState({
   }
 
   if (isEmpty) {
-    return fallback ?? (
-      <YStack style={{ padding: 20 }}>
-        <Text>{emptyMessage}</Text>
-      </YStack>
+    return (
+      fallback ?? (
+        <YStack style={{ padding: 20 }}>
+          <Text>{emptyMessage}</Text>
+        </YStack>
+      )
     );
   }
 

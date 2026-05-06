@@ -19,7 +19,7 @@ export function createSupabaseClient(
     auth: {
       autoRefreshToken: true,
       detectSessionInUrl: false,
-      flowType: "pkce",
+      flowType: "implicit",
       persistSession: true,
       storage,
     },

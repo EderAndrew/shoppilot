@@ -173,34 +173,34 @@ checkpoint.
 
 ### Tests for User Story 2
 
-- [ ] T104 [P] [US2] Add domain tests for product validation and duplicate candidate behavior in `apps/mobile/tests/unit/domain/product.test.ts`
-- [ ] T105 [P] [US2] Add domain tests for price comparison states and difference calculations in `apps/mobile/tests/unit/domain/priceInsight.test.ts`
-- [ ] T106 [P] [US2] Add use-case tests for product creation and search in `apps/mobile/tests/unit/application/productUseCases.test.ts`
-- [ ] T107 [P] [US2] Add use-case tests for append-only price recording and latest previous price lookup in `apps/mobile/tests/unit/application/priceHistoryUseCases.test.ts`
-- [ ] T108 [P] [US2] Add mapper tests for products and price history rows in `apps/mobile/tests/unit/infrastructure/productPriceMappers.test.ts`
-- [ ] T109 [P] [US2] Add integration tests for item price save creating history and price insight refresh in `apps/mobile/tests/integration/price-history-flow.test.ts`
+- [x] T104 [P] [US2] Add domain tests for product validation and duplicate candidate behavior in `apps/mobile/tests/unit/domain/product.test.ts`
+- [x] T105 [P] [US2] Add domain tests for price comparison states and difference calculations in `apps/mobile/tests/unit/domain/priceInsight.test.ts`
+- [x] T106 [P] [US2] Add use-case tests for product creation and search in `apps/mobile/tests/unit/application/productUseCases.test.ts`
+- [x] T107 [P] [US2] Add use-case tests for append-only price recording and latest previous price lookup in `apps/mobile/tests/unit/application/priceHistoryUseCases.test.ts`
+- [x] T108 [P] [US2] Add mapper tests for products and price history rows in `apps/mobile/tests/unit/infrastructure/productPriceMappers.test.ts`
+- [x] T109 [P] [US2] Add integration tests for item price save creating history and price insight refresh in `apps/mobile/tests/integration/price-history-flow.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T110 [P] [US2] Implement `PriceHistory` entity and append-only factory in `apps/mobile/src/domain/entities/PriceHistory.ts`
-- [ ] T111 [P] [US2] Implement price comparison domain service in `apps/mobile/src/domain/services/priceInsight.ts`
-- [ ] T112 [US2] Extend Supabase product repository with search/list/duplicate-candidate methods in `apps/mobile/src/infrastructure/repositories/SupabaseProductRepository.ts`
-- [ ] T113 [US2] Implement price history DB-to-domain mapper in `apps/mobile/src/infrastructure/mappers/priceHistoryMapper.ts`
-- [ ] T114 [US2] Implement Supabase price history repository append/latest/list methods in `apps/mobile/src/infrastructure/repositories/SupabasePriceHistoryRepository.ts`
-- [ ] T115 [US2] Implement `CreateProduct` and product search use cases in `apps/mobile/src/application/use-cases/products.ts`
-- [ ] T116 [US2] Implement `RecordPriceHistory`, `GetPreviousProductPrice`, and `CalculatePriceInsight` use cases in `apps/mobile/src/application/use-cases/priceHistory.ts`
-- [ ] T117 [US2] Update item add/update use cases to append price history when unit price is inserted or changed in `apps/mobile/src/application/use-cases/shoppingListItems.ts`
-- [ ] T118 [US2] Implement product query hooks for create/search/get in `apps/mobile/src/features/products/product.queries.ts`
-- [ ] T119 [US2] Implement price history and insight query hooks in `apps/mobile/src/features/price-history/priceHistory.queries.ts`
-- [ ] T120 [US2] Implement product form component with optional brand/barcode/unit in `apps/mobile/src/features/products/ProductForm.tsx`
-- [ ] T121 [US2] Implement product picker component for item forms in `apps/mobile/src/features/products/ProductPicker.tsx`
-- [ ] T122 [US2] Implement price comparison indicator component in `apps/mobile/src/features/insights/PriceComparisonIndicator.tsx`
-- [ ] T123 [US2] Update item form to support selecting or creating reusable products in `apps/mobile/src/features/shopping-list-items/ShoppingListItemForm.tsx`
-- [ ] T124 [US2] Update add item route to show latest previous price and comparison feedback in `apps/mobile/src/app/(app)/lists/[listId]/item-new.tsx`
-- [ ] T125 [US2] Update edit item route to show price comparison when unit price changes in `apps/mobile/src/app/(app)/lists/[listId]/item-[itemId].tsx`
-- [ ] T126 [US2] Implement create product route in `apps/mobile/src/app/(app)/products/new.tsx`
-- [ ] T127 [US2] Implement simple list insights route for price comparison states in `apps/mobile/src/app/(app)/lists/[listId]/insights.tsx`
-- [ ] T128 [US2] Add product duplicate guidance feedback in `apps/mobile/src/features/products/DuplicateProductNotice.tsx`
+- [x] T110 [P] [US2] Implement `PriceHistory` entity and append-only factory in `apps/mobile/src/domain/entities/PriceHistory.ts`
+- [x] T111 [P] [US2] Implement price comparison domain service in `apps/mobile/src/domain/services/priceInsight.ts`
+- [x] T112 [US2] Extend Supabase product repository with search/list/duplicate-candidate methods in `apps/mobile/src/infrastructure/repositories/SupabaseProductRepository.ts`
+- [x] T113 [US2] Implement price history DB-to-domain mapper in `apps/mobile/src/infrastructure/mappers/priceHistoryMapper.ts`
+- [x] T114 [US2] Implement Supabase price history repository append/latest/list methods in `apps/mobile/src/infrastructure/repositories/SupabasePriceHistoryRepository.ts`
+- [x] T115 [US2] Implement `CreateProduct` and product search use cases in `apps/mobile/src/application/use-cases/products.ts`
+- [x] T116 [US2] Implement `RecordPriceHistory`, `GetPreviousProductPrice`, and `CalculatePriceInsight` use cases in `apps/mobile/src/application/use-cases/priceHistory.ts`
+- [x] T117 [US2] Update item add/update use cases to append price history when unit price is inserted or changed in `apps/mobile/src/application/use-cases/shoppingListItems.ts`
+- [x] T118 [US2] Implement product query hooks for create/search/get in `apps/mobile/src/features/products/product.queries.ts`
+- [x] T119 [US2] Implement price history and insight query hooks in `apps/mobile/src/features/price-history/priceHistory.queries.ts`
+- [x] T120 [US2] Implement product form component with optional brand/barcode/unit in `apps/mobile/src/features/products/ProductForm.tsx`
+- [x] T121 [US2] Implement product picker component for item forms in `apps/mobile/src/features/products/ProductPicker.tsx`
+- [x] T122 [US2] Implement price comparison indicator component in `apps/mobile/src/features/insights/PriceComparisonIndicator.tsx`
+- [x] T123 [US2] Update item form to support selecting or creating reusable products in `apps/mobile/src/features/shopping-list-items/ShoppingListItemForm.tsx`
+- [x] T124 [US2] Update add item route to show latest previous price and comparison feedback in `apps/mobile/src/app/(app)/lists/[listId]/item-new.tsx`
+- [x] T125 [US2] Update edit item route to show price comparison when unit price changes in `apps/mobile/src/app/(app)/lists/[listId]/item-[itemId].tsx`
+- [x] T126 [US2] Implement create product route in `apps/mobile/src/app/(app)/products/new.tsx`
+- [x] T127 [US2] Implement simple list insights route for price comparison states in `apps/mobile/src/app/(app)/lists/[listId]/insights.tsx`
+- [x] T128 [US2] Add product duplicate guidance feedback in `apps/mobile/src/features/products/DuplicateProductNotice.tsx`
 
 **Checkpoint**: US2 is complete when product reuse, price history append, latest-price lookup, and comparison UI work independently on top of US1.
 
@@ -214,25 +214,25 @@ checkpoint.
 
 ### Tests for User Story 3
 
-- [ ] T129 [P] [US3] Add domain tests for user event metadata safety and supported event types in `apps/mobile/tests/unit/domain/userEvent.test.ts`
-- [ ] T130 [P] [US3] Add use-case tests for list completion and item checked event recording in `apps/mobile/tests/unit/application/eventUseCases.test.ts`
-- [ ] T131 [P] [US3] Add integration tests for ITEM_ADDED, ITEM_UPDATED, ITEM_REMOVED, ITEM_CHECKED, PRICE_RECORDED, and SHOPPING_LIST_COMPLETED events in `apps/mobile/tests/integration/user-events-flow.test.ts`
-- [ ] T132 [P] [US3] Add security tests that event metadata excludes tokens/session payloads in `apps/mobile/tests/security/user-events-metadata.test.ts`
+- [x] T129 [P] [US3] Add domain tests for user event metadata safety and supported event types in `apps/mobile/tests/unit/domain/userEvent.test.ts`
+- [x] T130 [P] [US3] Add use-case tests for list completion and item checked event recording in `apps/mobile/tests/unit/application/eventUseCases.test.ts`
+- [x] T131 [P] [US3] Add integration tests for ITEM_ADDED, ITEM_UPDATED, ITEM_REMOVED, ITEM_CHECKED, PRICE_RECORDED, and SHOPPING_LIST_COMPLETED events in `apps/mobile/tests/integration/user-events-flow.test.ts`
+- [x] T132 [P] [US3] Add security tests that event metadata excludes tokens/session payloads in `apps/mobile/tests/security/user-events-metadata.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T133 [P] [US3] Implement `UserEvent` entity and metadata sanitizer in `apps/mobile/src/domain/entities/UserEvent.ts`
-- [ ] T134 [P] [US3] Implement event metadata builders for list/product/item/price events in `apps/mobile/src/domain/events/eventMetadata.ts`
-- [ ] T135 [US3] Implement user event DB-to-domain mapper in `apps/mobile/src/infrastructure/mappers/userEventMapper.ts`
-- [ ] T136 [US3] Implement Supabase user event repository append method in `apps/mobile/src/infrastructure/repositories/SupabaseUserEventRepository.ts`
-- [ ] T137 [US3] Implement `RecordUserEvent` use case in `apps/mobile/src/application/use-cases/userEvents.ts`
-- [ ] T138 [US3] Update `CreateShoppingList` and `CompleteShoppingList` use cases to record list events in `apps/mobile/src/application/use-cases/shoppingLists.ts`
-- [ ] T139 [US3] Update `CreateProduct` use case to record PRODUCT_CREATED in `apps/mobile/src/application/use-cases/products.ts`
-- [ ] T140 [US3] Update item add/update/remove/check use cases to record item events in `apps/mobile/src/application/use-cases/shoppingListItems.ts`
-- [ ] T141 [US3] Update price history use cases to record PRICE_RECORDED with safe metadata in `apps/mobile/src/application/use-cases/priceHistory.ts`
-- [ ] T142 [US3] Add complete-list action and confirmation UI to list detail route in `apps/mobile/src/app/(app)/lists/[listId].tsx`
-- [ ] T143 [US3] Add archive-list action for completed lists in list overview route in `apps/mobile/src/app/(app)/index.tsx`
-- [ ] T144 [US3] Add event-safe logging around successful critical use cases in `apps/mobile/src/shared/logging/logger.ts`
+- [x] T133 [P] [US3] Implement `UserEvent` entity and metadata sanitizer in `apps/mobile/src/domain/entities/UserEvent.ts`
+- [x] T134 [P] [US3] Implement event metadata builders for list/product/item/price events in `apps/mobile/src/domain/events/eventMetadata.ts`
+- [x] T135 [US3] Implement user event DB-to-domain mapper in `apps/mobile/src/infrastructure/mappers/userEventMapper.ts`
+- [x] T136 [US3] Implement Supabase user event repository append method in `apps/mobile/src/infrastructure/repositories/SupabaseUserEventRepository.ts`
+- [x] T137 [US3] Implement `RecordUserEvent` use case in `apps/mobile/src/application/use-cases/userEvents.ts`
+- [x] T138 [US3] Update `CreateShoppingList` and `CompleteShoppingList` use cases to record list events in `apps/mobile/src/application/use-cases/shoppingLists.ts`
+- [x] T139 [US3] Update `CreateProduct` use case to record PRODUCT_CREATED in `apps/mobile/src/application/use-cases/products.ts`
+- [x] T140 [US3] Update item add/update/remove/check use cases to record item events in `apps/mobile/src/application/use-cases/shoppingListItems.ts`
+- [x] T141 [US3] Update price history use cases to record PRICE_RECORDED with safe metadata in `apps/mobile/src/application/use-cases/priceHistory.ts`
+- [x] T142 [US3] Add complete-list action and confirmation UI to list detail route in `apps/mobile/src/app/(app)/lists/[listId].tsx`
+- [x] T143 [US3] Add archive-list action for completed lists in list overview route in `apps/mobile/src/app/(app)/index.tsx`
+- [x] T144 [US3] Add event-safe logging around successful critical use cases in `apps/mobile/src/shared/logging/logger.ts`
 
 **Checkpoint**: US3 is complete when list/item completion flows work and every required successful action records an owned, safe UserEvent.
 
@@ -242,20 +242,29 @@ checkpoint.
 
 **Purpose**: Harden the full MVP, validate security and architecture, and prepare for `/speckit-implement` completion review.
 
-- [ ] T145 Add active-list Realtime subscription adapter scoped to authenticated list id in `apps/mobile/src/infrastructure/realtime/activeListSubscription.ts`
-- [ ] T146 Wire active-list Realtime updates into list detail query cache in `apps/mobile/src/features/shopping-list/useActiveListRealtime.ts`
-- [ ] T147 Add integration test for active-list Realtime cache patch behavior in `apps/mobile/tests/integration/active-list-realtime.test.ts`
-- [ ] T148 Add static boundary test preventing `supabase/client` imports from route and component files in `apps/mobile/tests/security/no-supabase-ui-imports.test.ts`
-- [ ] T149 Add security test for anon-key-only mobile configuration in `apps/mobile/tests/security/mobile-env.test.ts`
-- [ ] T150 Add repository ownership tests for cross-user list/product/item/history access denial in `apps/mobile/tests/security/repository-ownership.test.ts`
-- [ ] T151 Add append-only regression tests for price history and user events in `apps/mobile/tests/security/append-only-history-events.test.ts`
-- [ ] T152 Add route smoke test for full US1 to US3 happy path in `apps/mobile/tests/integration/monthly-shopping-mvp-flow.test.tsx`
-- [ ] T153 Audit all user-facing errors for safe messages in `apps/mobile/src/shared/errors/appError.ts`
-- [ ] T154 Audit all logs for sensitive data exclusion in `apps/mobile/src/shared/logging/logger.ts`
-- [ ] T155 Add accessibility labels and touch targets to list, item, budget, and comparison components in `apps/mobile/src/features`
-- [ ] T156 Add README implementation notes for Supabase setup, env variables, and RLS validation in `README.md`
-- [ ] T157 Run quickstart validation steps and record results in `specs/001-monthly-shopping-mvp/quickstart.md`
-- [ ] T158 Run typecheck, lint, unit, integration, and security test commands and document any residual failures in `specs/001-monthly-shopping-mvp/tasks.md`
+- [x] T145 Add active-list Realtime subscription adapter scoped to authenticated list id in `apps/mobile/src/infrastructure/realtime/activeListSubscription.ts`
+- [x] T146 Wire active-list Realtime updates into list detail query cache in `apps/mobile/src/features/shopping-list/useActiveListRealtime.ts`
+- [x] T147 Add integration test for active-list Realtime cache patch behavior in `apps/mobile/tests/integration/active-list-realtime.test.ts`
+- [x] T148 Add static boundary test preventing `supabase/client` imports from route and component files in `apps/mobile/tests/security/no-supabase-ui-imports.test.ts`
+- [x] T149 Add security test for anon-key-only mobile configuration in `apps/mobile/tests/security/mobile-env.test.ts`
+- [x] T150 Add repository ownership tests for cross-user list/product/item/history access denial in `apps/mobile/tests/security/repository-ownership.test.ts`
+- [x] T151 Add append-only regression tests for price history and user events in `apps/mobile/tests/security/append-only-history-events.test.ts`
+- [x] T152 Add route smoke test for full US1 to US3 happy path in `apps/mobile/tests/integration/monthly-shopping-mvp-flow.test.tsx`
+- [x] T153 Audit all user-facing errors for safe messages in `apps/mobile/src/shared/errors/appError.ts`
+- [x] T154 Audit all logs for sensitive data exclusion in `apps/mobile/src/shared/logging/logger.ts`
+- [x] T155 Add accessibility labels and touch targets to list, item, budget, and comparison components in `apps/mobile/src/features`
+- [x] T156 Add README implementation notes for Supabase setup, env variables, and RLS validation in `README.md`
+- [x] T157 Run quickstart validation steps and record results in `specs/001-monthly-shopping-mvp/quickstart.md`
+- [x] T158 Run typecheck, lint, unit, integration, and security test commands and document any residual failures in `specs/001-monthly-shopping-mvp/tasks.md`
+
+### Phase 6 Validation Notes
+
+- 2026-05-05: `pnpm --filter mobile typecheck` passed.
+- 2026-05-05: `pnpm --filter mobile lint` passed.
+- 2026-05-05: `pnpm --filter mobile test` passed with 26 test files and 96 tests.
+- 2026-05-05: `pnpm typecheck`, `pnpm lint`, and `pnpm test` passed.
+- 2026-05-05: Prettier check passed for Phase 6 touched files after formatting them.
+- Residual: `pnpm format:check` still fails repository-wide because 55 pre-existing files under `.agents`, `.specify`, Expo starter files, and planning artifacts are not formatted by the current repository-wide Prettier config. Those files were not reformatted as part of Phase 6 to avoid unrelated churn.
 
 ---
 

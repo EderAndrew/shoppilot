@@ -14,6 +14,17 @@ function normalizeOptional(value: string | null | undefined): string | null {
   return trimmed ? trimmed : null;
 }
 
+function normalizeIdentity(value: string | null | undefined): string {
+  return normalizeOptional(value)?.toLowerCase() ?? "";
+}
+
+export type ProductDuplicateCandidate = {
+  name: string;
+  brand?: string | null;
+  barcode?: string | null;
+  unit?: string | null;
+};
+
 export class Product {
   readonly id: string;
   readonly userId: string;
@@ -36,6 +47,19 @@ export class Product {
     this.unit = normalizeOptional(props.unit);
     this.createdAt = props.createdAt;
     this.updatedAt = props.updatedAt;
+  }
+
+  matchesDuplicateCandidate(candidate: ProductDuplicateCandidate): boolean {
+    const candidateBarcode = normalizeOptional(candidate.barcode);
+    if (this.barcode && candidateBarcode) {
+      return normalizeIdentity(this.barcode) === normalizeIdentity(candidateBarcode);
+    }
+
+    return (
+      normalizeIdentity(this.name) === normalizeIdentity(candidate.name) &&
+      normalizeIdentity(this.brand) === normalizeIdentity(candidate.brand) &&
+      normalizeIdentity(this.unit) === normalizeIdentity(candidate.unit)
+    );
   }
 
   toRecord() {
