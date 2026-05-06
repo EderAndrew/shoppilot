@@ -14,8 +14,8 @@ export default function LoginScreen() {
   return (
     <ScreenContainer centered>
       <YStack gap="$2">
-        <Text style={{ ...typography.screenTitle, color: colors.textPrimary }}>ShopPilot</Text>
-        <Text style={{ ...typography.body, color: colors.textSecondary }}>
+        <Text {...typography.screenTitle} color={colors.textPrimary}>ShopPilot</Text>
+        <Text {...typography.body} color={colors.textSecondary}>
           Faça login nas suas listas de compras mensais.
         </Text>
       </YStack>

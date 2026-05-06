@@ -7,6 +7,7 @@ import { shadows } from '../design-system/tokens';
 export type AppCardProps = PropsWithChildren<{
   variant?: CardVariant;
   elevated?: boolean;
+  accessibilityLabel?: string;
   onPress?: () => void;
 }>;
 
@@ -14,32 +15,17 @@ export function AppCard({
   children,
   variant = 'default',
   elevated = false,
+  accessibilityLabel,
   onPress,
 }: AppCardProps) {
   const variantStyle = cardVariants[variant];
   const shadowStyle = elevated ? shadows.card : shadows.subtle;
 
-  if (onPress) {
-    return (
-      <YStack
-        onPress={onPress}
-        style={[
-          cardBaseStyle,
-          {
-            backgroundColor: variantStyle.backgroundColor,
-            borderColor: variantStyle.borderColor,
-            borderWidth: variantStyle.borderWidth,
-          },
-          shadowStyle,
-        ]}
-      >
-        {children}
-      </YStack>
-    );
-  }
-
   return (
     <YStack
+      accessibilityLabel={onPress ? accessibilityLabel : undefined}
+      accessibilityRole={onPress ? 'button' : undefined}
+      onPress={onPress}
       style={[
         cardBaseStyle,
         {

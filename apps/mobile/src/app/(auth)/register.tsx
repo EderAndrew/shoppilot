@@ -17,8 +17,8 @@ export default function RegisterScreen() {
   return (
     <ScreenContainer centered scrollable>
       <YStack gap="$2">
-        <Text style={{ ...typography.screenTitle, color: colors.textPrimary }}>Criar Conta</Text>
-        <Text style={{ ...typography.body, color: colors.textSecondary }}>
+        <Text {...typography.screenTitle} color={colors.textPrimary}>Criar Conta</Text>
+        <Text {...typography.body} color={colors.textSecondary}>
           Comece a fazer um orçamento mensal para as compras de supermercado.
         </Text>
       </YStack>

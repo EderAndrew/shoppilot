@@ -22,11 +22,9 @@ export function ShoppingListItemRow({
 }: ShoppingListItemRowProps) {
   return (
     <XStack
-      style={{
-        alignItems: "center",
-        borderBottomWidth: 1,
-        borderColor: colors.border,
-      }}
+      alignItems="center"
+      borderBottomWidth={1}
+      borderColor={colors.border}
     >
       <AppButton
         accessibilityLabel={

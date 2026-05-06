@@ -33,12 +33,7 @@ export default function ShoppingListInsightsScreen() {
           <YStack gap="$3">
             {(details.data?.items ?? []).map((item) => (
               <YStack gap="$2" key={item.id}>
-                <Text
-                  style={{
-                    ...typography.bodyStrong,
-                    color: colors.textPrimary,
-                  }}
-                >
+                <Text {...typography.bodyStrong} color={colors.textPrimary}>
                   {item.productName ?? `Produto ${item.productId.slice(0, 8)}`}
                 </Text>
                 <ItemInsight productId={item.productId} unitPrice={item.unitPrice} />

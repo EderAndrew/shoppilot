@@ -14,11 +14,11 @@ export function DuplicateProductNotice({ candidates }: DuplicateProductNoticePro
   return (
     <AppCard variant="warning">
       <YStack gap="$2">
-        <Text style={{ ...typography.bodyStrong, color: colors.warning }}>
+        <Text {...typography.bodyStrong} color={colors.warning}>
           Já existe um produto parecido
         </Text>
         {candidates.slice(0, 3).map((candidate) => (
-          <Text key={candidate.id} style={{ ...typography.caption, color: colors.textSecondary }}>
+          <Text key={candidate.id} {...typography.caption} color={colors.textSecondary}>
             {candidate.name}
             {candidate.brand ? `, ${candidate.brand}` : ""}
             {candidate.unit ? ` (${candidate.unit})` : ""}

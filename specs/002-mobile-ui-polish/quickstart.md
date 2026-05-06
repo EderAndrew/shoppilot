@@ -54,3 +54,13 @@ pnpm --filter mobile start
 - Keep theme mappings separate from component behavior.
 - Avoid screen-level conditional theme logic.
 - Add dark mode later by mapping the same semantic roles to dark values.
+
+## Design System Reference
+
+Full usage guide is at `apps/mobile/src/shared/design-system/README.md`. It covers:
+
+- How to build a new screen from shared primitives
+- Token usage rules (colors, typography, spacing, radius, shadows)
+- Component cheat-sheet (ScreenContainer, SectionHeader, AppCard, AppButton, AppInput, AppListItem, AsyncState, and visual states)
+- Anti-patterns to avoid in code review
+- Dark-mode readiness rules and the future dark theme implementation plan

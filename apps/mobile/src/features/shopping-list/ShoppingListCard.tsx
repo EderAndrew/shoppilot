@@ -20,28 +20,17 @@ export type ShoppingListCardProps = {
 export function ShoppingListCard({ list, onPress }: ShoppingListCardProps) {
   return (
     <AppCard
+      accessibilityLabel={`Abrir lista ${list.name}, orçamento ${formatMoney(list.budget)}, status ${statusLabels[list.status]}`}
       elevated
       variant="actionable"
       onPress={onPress}
     >
-      <XStack accessibilityLabel={`Abrir lista ${list.name}, orçamento ${formatMoney(list.budget)}, status ${statusLabels[list.status]}`} style={{ alignItems: "center", gap: 8 }}>
+      <XStack alignItems="center" gap={8}>
         <YStack flex={1} gap="$1">
-          <Text
-            numberOfLines={2}
-            style={{
-              ...typography.bodyStrong,
-              color: colors.textPrimary,
-            }}
-          >
+          <Text numberOfLines={2} {...typography.bodyStrong} color={colors.textPrimary}>
             {list.name}
           </Text>
-          <Text
-            numberOfLines={1}
-            style={{
-              ...typography.caption,
-              color: colors.textSecondary,
-            }}
-          >
+          <Text numberOfLines={1} {...typography.caption} color={colors.textSecondary}>
             {formatMoney(list.budget)} · {statusLabels[list.status]}
           </Text>
         </YStack>

@@ -13,6 +13,7 @@ export type EmptyStateProps = {
 export function EmptyState({ title, message, actionLabel, onAction }: EmptyStateProps) {
   return (
     <YStack
+      accessibilityLiveRegion="polite"
       style={{
         alignItems: 'center',
         padding: spacing.screenPadding,

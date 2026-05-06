@@ -18,20 +18,18 @@ export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary 
         accessibilityRole="summary"
         gap="$3"
       >
-        <XStack style={{ justifyContent: "space-between" }}>
+        <XStack justifyContent="space-between">
           <YStack>
-            <Text style={{ ...typography.caption, color: colors.textSecondary }}>Gasto</Text>
-            <Text style={{ ...typography.sectionTitle, color: colors.textPrimary }}>
+            <Text {...typography.caption} color={colors.textSecondary}>Gasto</Text>
+            <Text {...typography.sectionTitle} color={colors.textPrimary}>
               {formatMoney(summary.total)}
             </Text>
           </YStack>
-          <YStack style={{ alignItems: "flex-end" }}>
-            <Text style={{ ...typography.caption, color: colors.textSecondary }}>Restante</Text>
+          <YStack alignItems="flex-end">
+            <Text {...typography.caption} color={colors.textSecondary}>Restante</Text>
             <Text
-              style={{
-                ...typography.sectionTitle,
-                color: summary.remaining < 0 ? colors.danger : colors.success,
-              }}
+              {...typography.sectionTitle}
+              color={summary.remaining < 0 ? colors.danger : colors.success}
             >
               {formatMoney(summary.remaining)}
             </Text>
@@ -42,16 +40,14 @@ export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary 
           value={progressValue}
         >
           <Progress.Indicator
-            style={{
-              backgroundColor: summary.isOverBudget ? colors.danger : colors.success,
-            }}
+            backgroundColor={summary.isOverBudget ? colors.danger : colors.success}
           />
         </Progress>
-        <XStack style={{ justifyContent: "space-between" }}>
-          <Text style={{ ...typography.caption, color: colors.textSecondary }}>
+        <XStack justifyContent="space-between">
+          <Text {...typography.caption} color={colors.textSecondary}>
             {formatPercentage(summary.usedPercentage)} usado
           </Text>
-          <Text style={{ ...typography.caption, color: colors.textSecondary }}>
+          <Text {...typography.caption} color={colors.textSecondary}>
             Orçamento {formatMoney(summary.budget)}
           </Text>
         </XStack>
