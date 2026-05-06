@@ -1,20 +1,23 @@
 import { type Href, useRouter } from "expo-router";
-import { Button, Text, YStack } from "tamagui";
+import { Text, YStack } from "tamagui";
 
 import { LoginForm } from "../../features/auth/LoginForm";
 import { useLoginMutation } from "../../features/auth/auth.queries";
+import { colors, typography } from "../../shared/design-system/tokens";
+import { AppButton } from "../../shared/ui/AppButton";
+import { ScreenContainer } from "../../shared/ui/ScreenContainer";
 
 export default function LoginScreen() {
   const router = useRouter();
   const login = useLoginMutation();
 
   return (
-    <YStack gap="$5" style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+    <ScreenContainer centered>
       <YStack gap="$2">
-        <Text fontSize="$9" fontWeight="700">
-          ShopPilot
+        <Text style={{ ...typography.screenTitle, color: colors.textPrimary }}>ShopPilot</Text>
+        <Text style={{ ...typography.body, color: colors.textSecondary }}>
+          Faça login nas suas listas de compras mensais.
         </Text>
-        <Text color="$gray10">Faça login nas suas listas de compras mensais.</Text>
       </YStack>
       <LoginForm
         error={login.error}
@@ -23,9 +26,9 @@ export default function LoginScreen() {
           login.mutate(values, { onSuccess: () => router.replace("/(app)" as Href) })
         }
       />
-      <Button chromeless onPress={() => router.push("/(auth)/register" as Href)}>
+      <AppButton variant="subtle" onPress={() => router.push("/(auth)/register" as Href)}>
         Criar Conta
-      </Button>
-    </YStack>
+      </AppButton>
+    </ScreenContainer>
   );
 }

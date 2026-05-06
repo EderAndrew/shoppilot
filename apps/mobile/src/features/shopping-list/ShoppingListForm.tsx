@@ -1,7 +1,10 @@
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Label, Text, YStack } from "tamagui";
+import { YStack } from "tamagui";
 
 import { getSafeErrorMessage } from "@/shared/errors/appError";
+import { AppButton } from "@/shared/ui/AppButton";
+import { AppInput } from "@/shared/ui/AppInput";
+import { StatusState } from "@/shared/ui/StatusState";
 
 import { shoppingListSchema, type ShoppingListFormValues } from "./shoppingList.schemas";
 
@@ -18,49 +21,42 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
 
   return (
     <YStack gap="$3">
-      <YStack gap="$2">
-        <Label htmlFor="name">Nome da lista</Label>
-        <Controller
-          control={form.control}
-          name="name"
-          render={({ field, fieldState }) => (
-            <>
-              <Input
-                accessibilityLabel="Nome da lista"
-                id="name"
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                value={field.value}
-              />
-              {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-            </>
-          )}
-        />
-      </YStack>
-      <YStack gap="$2">
-        <Label htmlFor="budget">Orçamento</Label>
-        <Controller
-          control={form.control}
-          name="budget"
-          render={({ field, fieldState }) => (
-            <>
-              <Input
-                accessibilityLabel="Orçamento"
-                id="budget"
-                keyboardType="decimal-pad"
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                value={String(field.value || "")}
-              />
-              {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-            </>
-          )}
-        />
-      </YStack>
-      {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
-      <Button
+      <Controller
+        control={form.control}
+        name="name"
+        render={({ field, fieldState }) => (
+          <AppInput
+            accessibilityLabel="Nome da lista"
+            error={fieldState.error?.message}
+            id="name"
+            label="Nome da lista"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="budget"
+        render={({ field, fieldState }) => (
+          <AppInput
+            accessibilityLabel="Orçamento"
+            error={fieldState.error?.message}
+            id="budget"
+            keyboardType="decimal-pad"
+            label="Orçamento"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={String(field.value || "")}
+          />
+        )}
+      />
+      {error ? <StatusState message={getSafeErrorMessage(error)} tone="error" /> : null}
+      <AppButton
         accessibilityLabel="Criar lista"
-        disabled={isSubmitting}
+        fullWidth
+        loading={isSubmitting}
         onPress={form.handleSubmit((values) => {
           const parsed = shoppingListSchema.safeParse(values);
           if (parsed.success) onSubmit(parsed.data);
@@ -73,7 +69,7 @@ export function ShoppingListForm({ error, isSubmitting = false, onSubmit }: Shop
         })}
       >
         Criar lista
-      </Button>
+      </AppButton>
     </YStack>
   );
 }

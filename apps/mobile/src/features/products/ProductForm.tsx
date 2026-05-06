@@ -1,7 +1,10 @@
 import { Controller, useForm } from "react-hook-form";
-import { Button, Input, Label, Text, YStack } from "tamagui";
+import { YStack } from "tamagui";
 
 import { getSafeErrorMessage } from "@/shared/errors/appError";
+import { AppButton } from "@/shared/ui/AppButton";
+import { AppInput } from "@/shared/ui/AppInput";
+import { StatusState } from "@/shared/ui/StatusState";
 
 import { DuplicateProductNotice } from "./DuplicateProductNotice";
 import { productSchema, type ProductFormValues } from "./product.schemas";
@@ -41,78 +44,69 @@ export function ProductForm({
 
   return (
     <YStack gap="$3">
-      <YStack gap="$2">
-        <Label htmlFor="name">Nome</Label>
-        <Controller
-          control={form.control}
-          name="name"
-          render={({ field, fieldState }) => (
-            <>
-              <Input
-                accessibilityLabel="Nome do produto"
-                id="name"
-                onBlur={field.onBlur}
-                onChangeText={field.onChange}
-                value={field.value}
-              />
-              {fieldState.error ? <Text color="$red10">{fieldState.error.message}</Text> : null}
-            </>
-          )}
-        />
-      </YStack>
-      <YStack gap="$2">
-        <Label htmlFor="brand">Marca</Label>
-        <Controller
-          control={form.control}
-          name="brand"
-          render={({ field }) => (
-            <Input
-              accessibilityLabel="Marca do produto"
-              id="brand"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              value={field.value ?? ""}
-            />
-          )}
-        />
-      </YStack>
-      <YStack gap="$2">
-        <Label htmlFor="barcode">Código de barras</Label>
-        <Controller
-          control={form.control}
-          name="barcode"
-          render={({ field }) => (
-            <Input
-              accessibilityLabel="Código de barras do produto"
-              id="barcode"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              value={field.value ?? ""}
-            />
-          )}
-        />
-      </YStack>
-      <YStack gap="$2">
-        <Label htmlFor="unit">Unidade</Label>
-        <Controller
-          control={form.control}
-          name="unit"
-          render={({ field }) => (
-            <Input
-              accessibilityLabel="Unidade do produto"
-              id="unit"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              value={field.value ?? ""}
-            />
-          )}
-        />
-      </YStack>
+      <Controller
+        control={form.control}
+        name="name"
+        render={({ field, fieldState }) => (
+          <AppInput
+            accessibilityLabel="Nome do produto"
+            error={fieldState.error?.message}
+            id="name"
+            label="Nome"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={field.value}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="brand"
+        render={({ field }) => (
+          <AppInput
+            accessibilityLabel="Marca do produto"
+            id="brand"
+            label="Marca"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={field.value ?? ""}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="barcode"
+        render={({ field }) => (
+          <AppInput
+            accessibilityLabel="Código de barras do produto"
+            id="barcode"
+            label="Código de barras"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={field.value ?? ""}
+          />
+        )}
+      />
+      <Controller
+        control={form.control}
+        name="unit"
+        render={({ field }) => (
+          <AppInput
+            accessibilityLabel="Unidade do produto"
+            id="unit"
+            label="Unidade"
+            onBlur={field.onBlur}
+            onChangeText={field.onChange}
+            value={field.value ?? ""}
+          />
+        )}
+      />
       <DuplicateProductNotice candidates={duplicateCandidates.data ?? []} />
-      {error ? <Text color="$red10">{getSafeErrorMessage(error)}</Text> : null}
-      <Button
+      {error ? <StatusState message={getSafeErrorMessage(error)} tone="error" /> : null}
+      <AppButton
         accessibilityLabel={submitLabel}
-        disabled={isSubmitting}
+        fullWidth
+        loading={isSubmitting}
         onPress={form.handleSubmit((values) => {
           const parsed = productSchema.safeParse(values);
           if (parsed.success) onSubmit(parsed.data);
@@ -125,7 +119,7 @@ export function ProductForm({
         })}
       >
         {submitLabel}
-      </Button>
+      </AppButton>
     </YStack>
   );
 }

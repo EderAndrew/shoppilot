@@ -1,13 +1,17 @@
 import type { PropsWithChildren, ReactNode } from "react";
-import { Button, Spinner, Text, YStack } from "tamagui";
 
 import { getSafeErrorMessage } from "../errors/appError";
+import { EmptyState } from "../ui/EmptyState";
+import { ErrorState } from "../ui/ErrorState";
+import { LoadingState } from "../ui/LoadingState";
 
 export type AsyncStateProps = PropsWithChildren<{
   isLoading?: boolean;
   error?: unknown;
   isEmpty?: boolean;
   emptyMessage?: string;
+  emptyActionLabel?: string;
+  onEmptyAction?: () => void;
   onRetry?: () => void;
   retryLabel?: string;
   loadingLabel?: string;
@@ -17,6 +21,8 @@ export type AsyncStateProps = PropsWithChildren<{
 export function AsyncState({
   children,
   emptyMessage = "Nada para mostrar ainda.",
+  emptyActionLabel,
+  onEmptyAction,
   error,
   fallback,
   isEmpty = false,
@@ -26,29 +32,27 @@ export function AsyncState({
   retryLabel = "Tentar novamente",
 }: AsyncStateProps) {
   if (isLoading) {
-    return (
-      <YStack gap="$3" style={{ alignItems: "center", padding: 20 }}>
-        <Spinner />
-        <Text>{loadingLabel}</Text>
-      </YStack>
-    );
+    return <LoadingState label={loadingLabel} />;
   }
 
   if (error) {
     return (
-      <YStack gap="$3" style={{ padding: 20 }}>
-        <Text color="$red10">{getSafeErrorMessage(error)}</Text>
-        {onRetry ? <Button onPress={onRetry}>{retryLabel}</Button> : null}
-      </YStack>
+      <ErrorState
+        message={getSafeErrorMessage(error)}
+        retryLabel={retryLabel}
+        onRetry={onRetry}
+      />
     );
   }
 
   if (isEmpty) {
     return (
       fallback ?? (
-        <YStack style={{ padding: 20 }}>
-          <Text>{emptyMessage}</Text>
-        </YStack>
+        <EmptyState
+          actionLabel={emptyActionLabel}
+          title={emptyMessage}
+          onAction={onEmptyAction}
+        />
       )
     );
   }

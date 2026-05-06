@@ -1,24 +1,19 @@
 import { type Href, Stack, useRouter } from "expo-router";
-import { ScrollView, Text, YStack } from "tamagui";
 
 import { ShoppingListForm } from "../../../features/shopping-list/ShoppingListForm";
 import { useCreateShoppingListMutation } from "../../../features/shopping-list/shoppingList.queries";
+import { ScreenContainer } from "../../../shared/ui/ScreenContainer";
+import { SectionHeader } from "../../../shared/ui/SectionHeader";
 
 export default function NewShoppingListScreen() {
   const router = useRouter();
   const createList = useCreateShoppingListMutation();
 
   return (
-    <ScrollView flex={1}>
-      <Stack.Screen
-        options={{
-          title: "Nova lista",
-        }}
-      />
-      <YStack gap="$4" style={{ padding: 16 }}>
-        <Text fontSize="$8" fontWeight="700">
-          Nova lista
-        </Text>
+    <>
+      <Stack.Screen options={{ title: "Nova lista" }} />
+      <ScreenContainer scrollable>
+        <SectionHeader title="Nova lista" />
         <ShoppingListForm
           error={createList.error}
           isSubmitting={createList.isPending}
@@ -28,7 +23,7 @@ export default function NewShoppingListScreen() {
             })
           }
         />
-      </YStack>
-    </ScrollView>
+      </ScreenContainer>
+    </>
   );
 }

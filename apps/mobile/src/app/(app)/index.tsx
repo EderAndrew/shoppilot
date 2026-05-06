@@ -1,9 +1,12 @@
-import { Archive, Plus } from "@tamagui/lucide-icons-2";
+import { Plus, Archive } from "@tamagui/lucide-icons-2";
 import { type Href, Stack, useRouter } from "expo-router";
 import { Alert } from "react-native";
-import { Button, ScrollView, Text, XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 
 import { AsyncState } from "../../shared/feedback/AsyncState";
+import { AppButton } from "../../shared/ui/AppButton";
+import { ScreenContainer } from "../../shared/ui/ScreenContainer";
+import { SectionHeader } from "../../shared/ui/SectionHeader";
 import { ShoppingListCard } from "../../features/shopping-list/ShoppingListCard";
 import {
   useArchiveShoppingListMutation,
@@ -26,51 +29,55 @@ export default function ShoppingListsScreen() {
   };
 
   return (
-    <ScrollView flex={1}>
-      <Stack.Screen
-        options={{
-          title: "Listas",
-        }}
-      />
-      <YStack gap="$4" style={{ padding: 16 }}>
-        <XStack style={{ alignItems: "center", justifyContent: "space-between" }}>
-          <Text fontSize="$8" fontWeight="700">
-            Listas
-          </Text>
-          <Button icon={Plus} onPress={() => router.push("/(app)/lists/new" as Href)}>
+    <ScreenContainer scrollable>
+      <Stack.Screen options={{ title: "Listas" }} />
+      <SectionHeader
+        title="Listas"
+        action={
+          <AppButton
+            accessibilityLabel="Nova lista"
+            icon={<Plus size={18} />}
+            size="sm"
+            onPress={() => router.push("/(app)/lists/new" as Href)}
+          >
             Nova
-          </Button>
-        </XStack>
-        <AsyncState
-          emptyMessage="Crie sua primeira lista mensal."
-          error={lists.error}
-          isEmpty={(lists.data?.length ?? 0) === 0}
-          isLoading={lists.isLoading}
-          onRetry={() => lists.refetch()}
-        >
-          <YStack gap="$3">
-            {lists.data?.map((list) => (
-              <YStack gap="$2" key={list.id}>
-                <ShoppingListCard
-                  list={list}
-                  onPress={() => router.push(`/(app)/lists/${list.id}` as Href)}
-                />
-                {list.status === "completed" ? (
-                  <Button
+          </AppButton>
+        }
+      />
+      <AsyncState
+        emptyActionLabel="Criar lista"
+        emptyMessage="Crie sua primeira lista mensal."
+        error={lists.error}
+        isEmpty={(lists.data?.length ?? 0) === 0}
+        isLoading={lists.isLoading}
+        onEmptyAction={() => router.push("/(app)/lists/new" as Href)}
+        onRetry={() => lists.refetch()}
+      >
+        <YStack gap="$3">
+          {lists.data?.map((list) => (
+            <YStack gap="$2" key={list.id}>
+              <ShoppingListCard
+                list={list}
+                onPress={() => router.push(`/(app)/lists/${list.id}` as Href)}
+              />
+              {list.status === "completed" ? (
+                <YStack alignItems="flex-end">
+                  <AppButton
+                    accessibilityLabel={`Arquivar lista ${list.name}`}
+                    icon={<Archive size={16} />}
+                    size="sm"
+                    variant="secondary"
                     disabled={archiveList.isPending}
-                    icon={Archive}
                     onPress={() => confirmArchiveList(list.id)}
-                    size="$3"
-                    style={{ alignSelf: "flex-end" }}
                   >
                     Arquivar
-                  </Button>
-                ) : null}
-              </YStack>
-            ))}
-          </YStack>
-        </AsyncState>
-      </YStack>
-    </ScrollView>
+                  </AppButton>
+                </YStack>
+              ) : null}
+            </YStack>
+          ))}
+        </YStack>
+      </AsyncState>
+    </ScreenContainer>
   );
 }

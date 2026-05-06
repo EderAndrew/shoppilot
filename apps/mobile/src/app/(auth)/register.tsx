@@ -1,9 +1,13 @@
 import { type Href, useRouter } from "expo-router";
 import { useState } from "react";
-import { Button, Text, YStack } from "tamagui";
+import { Text, YStack } from "tamagui";
 
 import { RegisterForm } from "../../features/auth/RegisterForm";
 import { useRegisterMutation } from "../../features/auth/auth.queries";
+import { colors, typography } from "../../shared/design-system/tokens";
+import { AppButton } from "../../shared/ui/AppButton";
+import { SuccessState } from "../../shared/ui/StatusState";
+import { ScreenContainer } from "../../shared/ui/ScreenContainer";
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -11,12 +15,10 @@ export default function RegisterScreen() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   return (
-    <YStack gap="$5" style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+    <ScreenContainer centered scrollable>
       <YStack gap="$2">
-        <Text fontSize="$9" fontWeight="700">
-          Criar Conta
-        </Text>
-        <Text color="$gray10">
+        <Text style={{ ...typography.screenTitle, color: colors.textPrimary }}>Criar Conta</Text>
+        <Text style={{ ...typography.body, color: colors.textSecondary }}>
           Comece a fazer um orçamento mensal para as compras de supermercado.
         </Text>
       </YStack>
@@ -32,17 +34,16 @@ export default function RegisterScreen() {
                   router.replace("/(app)" as Href);
                   return;
                 }
-
                 setSuccessMessage("Conta criada. Confirme seu email antes de entrar.");
               },
             },
           )
         }
       />
-      {successMessage ? <Text color="$green10">{successMessage}</Text> : null}
-      <Button chromeless onPress={() => router.push("/(auth)/login" as Href)}>
+      {successMessage ? <SuccessState message={successMessage} /> : null}
+      <AppButton variant="subtle" onPress={() => router.push("/(auth)/login" as Href)}>
         Faça login
-      </Button>
-    </YStack>
+      </AppButton>
+    </ScreenContainer>
   );
 }
