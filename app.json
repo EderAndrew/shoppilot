@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "cc0f9543-da95-4efb-8289-ba50823fff7f"
+      }
+    },
+    "android": {
+      "package": "com.drew_ed.shoppilot"
+    }
+  }
+}
