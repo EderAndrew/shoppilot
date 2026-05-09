@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eas-cli": "^18.11.0",
     "prettier": "^3.6.2"
   },
   "engines": {
