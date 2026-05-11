@@ -37,7 +37,10 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-sqlite",
+      "expo-font",
+      "expo-secure-store"
     ]
   }
 }

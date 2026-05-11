@@ -16,7 +16,9 @@
     "lint": "pnpm --filter mobile lint",
     "test": "pnpm --filter mobile test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "mobile:export:android": "pnpm --filter mobile exec npx expo export --platform android --clear",
+    "mobile:export:ios": "pnpm --filter mobile exec npx expo export --platform ios --clear"
   },
   "keywords": [],
   "author": "",
