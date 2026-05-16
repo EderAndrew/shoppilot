@@ -1,8 +1,9 @@
 {
   "expo": {
+    "slug": "shop-pilot",
     "extra": {
       "eas": {
-        "projectId": "70231231-05a6-43fe-8fb3-510672f6b9a8"
+        "projectId": "a470820d-b467-4960-8310-103a1284c8f2"
       }
     },
     "android": {

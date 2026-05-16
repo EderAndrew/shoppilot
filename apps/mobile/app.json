@@ -28,11 +28,6 @@
       "predictiveBackGestureEnabled": false,
       "package": "com.drew_ed.shoppilot"
     },
-    "extra": {
-      "eas": {
-        "projectId": "a470820d-b467-4960-8310-103a1284c8f2"
-      }
-    },
     "web": {
       "bundler": "metro"
     },
@@ -41,6 +36,11 @@
       "expo-sqlite",
       "expo-font",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a470820d-b467-4960-8310-103a1284c8f2"
+      }
+    }
   }
 }

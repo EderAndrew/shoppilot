@@ -2,7 +2,7 @@
   "name": "shopPilot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "pnpm mobile:start",
     "android": "pnpm mobile:android",
@@ -12,6 +12,7 @@
     "mobile:android": "pnpm --filter mobile android",
     "mobile:ios": "pnpm --filter mobile ios",
     "mobile:web": "pnpm --filter mobile web",
+    "mobile:eas": "pnpm -C apps/mobile exec eas",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm --filter mobile lint",
     "test": "pnpm --filter mobile test",
@@ -28,7 +29,7 @@
     "prettier": "^3.6.2"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   },
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
