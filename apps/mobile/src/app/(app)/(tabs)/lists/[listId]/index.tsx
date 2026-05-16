@@ -1,12 +1,12 @@
-import { CheckCircle, Plus } from "@tamagui/lucide-icons-2";
+import { CheckCircle, Plus, Sparkles } from "@tamagui/lucide-icons-2";
 import { type Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Alert } from "react-native";
-import { XStack, YStack } from "tamagui";
+import { Text, XStack, YStack } from "tamagui";
 
 import { AsyncState } from "../../../../../shared/feedback/AsyncState";
 import { AppButton } from "../../../../../shared/ui/AppButton";
 import { ScreenContainer } from "../../../../../shared/ui/ScreenContainer";
-import { SectionHeader } from "../../../../../shared/ui/SectionHeader";
+import { colors, typography } from "../../../../../shared/design-system/tokens";
 import { BudgetSummary } from "../../../../../features/shopping-list/BudgetSummary";
 import { OverBudgetAlert } from "../../../../../features/shopping-list/OverBudgetAlert";
 import {
@@ -19,6 +19,8 @@ import {
   useCheckShoppingListItemMutation,
   useRemoveShoppingListItemMutation,
 } from "../../../../../features/shopping-list-items/item.queries";
+import { AISuggestionSheet } from "../../../../../features/ai-assistant/AISuggestionSheet";
+import { useUiStore } from "../../../../../shared/state/uiStore";
 
 const statusLabels = {
   active: "ativa",
@@ -33,6 +35,7 @@ export default function ShoppingListDetailsScreen() {
   const completeList = useCompleteShoppingListMutation();
   const removeItem = useRemoveShoppingListItemMutation(listId);
   const checkItem = useCheckShoppingListItemMutation(listId);
+  const { setAIAssistantOpen } = useUiStore();
   useActiveListRealtime(listId);
 
   const confirmCompleteList = () => {
@@ -56,10 +59,41 @@ export default function ShoppingListDetailsScreen() {
         >
           {details.data ? (
             <>
-              <SectionHeader
-                title={details.data.list.name}
-                subtitle={statusLabels[details.data.list.status]}
-              />
+              <XStack style={{ alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <YStack flex={1} gap="$1">
+                  <Text
+                    numberOfLines={2}
+                    style={{
+                      fontSize: typography.sectionTitle.fontSize,
+                      fontWeight: typography.sectionTitle.fontWeight,
+                      lineHeight: typography.sectionTitle.lineHeight,
+                      color: colors.textPrimary,
+                    }}
+                  >
+                    {details.data.list.name}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: typography.caption.fontSize,
+                      color: colors.textSecondary,
+                    }}
+                  >
+                    {statusLabels[details.data.list.status]}
+                  </Text>
+                </YStack>
+                {details.data.list.status === "active" ? (
+                  <AppButton
+                    accessibilityLabel="Sugestões de IA"
+                    icon={<Sparkles size={16} />}
+                    size="sm"
+                    variant="ai"
+                    onPress={() => setAIAssistantOpen(true)}
+                  >
+                    IA
+                  </AppButton>
+                ) : null}
+              </XStack>
               <XStack gap="$2">
                 <YStack flex={1}>
                   <AppButton
@@ -133,6 +167,15 @@ export default function ShoppingListDetailsScreen() {
           ) : null}
         </AsyncState>
       </ScreenContainer>
+      {details.data?.list.status === "active" ? (
+        <AISuggestionSheet
+          listId={listId}
+          listName={details.data.list.name}
+          existingItemNames={details.data.items
+            .map((item) => item.productName)
+            .filter((name): name is string => name != null)}
+        />
+      ) : null}
     </>
   );
 }

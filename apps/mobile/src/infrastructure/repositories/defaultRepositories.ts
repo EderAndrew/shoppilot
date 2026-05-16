@@ -1,5 +1,6 @@
 import { createRepositoryContainer } from "@/application/ports/repositoryContainer";
 
+import { SupabaseAIRepository } from "./SupabaseAIRepository";
 import { SupabaseAuthRepository } from "./SupabaseAuthRepository";
 import { SupabasePriceHistoryRepository } from "./SupabasePriceHistoryRepository";
 import { SupabaseProductRepository } from "./SupabaseProductRepository";
@@ -11,6 +12,7 @@ const auth = new SupabaseAuthRepository();
 const userEvents = new SupabaseUserEventRepository(auth);
 
 export const defaultRepositories = createRepositoryContainer({
+  ai: new SupabaseAIRepository(),
   auth,
   priceHistory: new SupabasePriceHistoryRepository(auth),
   products: new SupabaseProductRepository(auth),
