@@ -15,5 +15,8 @@ export function parseMobileEnv(input: Record<string, string | undefined>): Mobil
 }
 
 export function getMobileEnv(): MobileEnv {
-  return parseMobileEnv(process.env);
+  return parseMobileEnv({
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+    EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
+  });
 }
