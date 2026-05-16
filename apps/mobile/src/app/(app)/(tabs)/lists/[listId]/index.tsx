@@ -1,4 +1,4 @@
-import { CheckCircle, Plus } from "@tamagui/lucide-icons-2";
+import { CheckCircle, Plus, Sparkles } from "@tamagui/lucide-icons-2";
 import { type Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Alert } from "react-native";
 import { XStack, YStack } from "tamagui";
@@ -19,6 +19,8 @@ import {
   useCheckShoppingListItemMutation,
   useRemoveShoppingListItemMutation,
 } from "../../../../../features/shopping-list-items/item.queries";
+import { AISuggestionSheet } from "../../../../../features/ai-assistant/AISuggestionSheet";
+import { useUiStore } from "../../../../../shared/state/uiStore";
 
 const statusLabels = {
   active: "ativa",
@@ -33,6 +35,7 @@ export default function ShoppingListDetailsScreen() {
   const completeList = useCompleteShoppingListMutation();
   const removeItem = useRemoveShoppingListItemMutation(listId);
   const checkItem = useCheckShoppingListItemMutation(listId);
+  const { setAIAssistantOpen } = useUiStore();
   useActiveListRealtime(listId);
 
   const confirmCompleteList = () => {
@@ -86,6 +89,20 @@ export default function ShoppingListDetailsScreen() {
                     </AppButton>
                   </YStack>
                 ) : null}
+                {details.data.list.status === "active" ? (
+                  <YStack flex={1}>
+                    <AppButton
+                      fullWidth
+                      accessibilityLabel="Sugestões de IA"
+                      icon={<Sparkles size={16} />}
+                      size="sm"
+                      variant="secondary"
+                      onPress={() => setAIAssistantOpen(true)}
+                    >
+                      IA
+                    </AppButton>
+                  </YStack>
+                ) : null}
                 <YStack flex={1}>
                   <AppButton
                     fullWidth
@@ -133,6 +150,15 @@ export default function ShoppingListDetailsScreen() {
           ) : null}
         </AsyncState>
       </ScreenContainer>
+      {details.data?.list.status === "active" ? (
+        <AISuggestionSheet
+          listId={listId}
+          listName={details.data.list.name}
+          existingItemNames={details.data.items
+            .map((item) => item.productName)
+            .filter((name): name is string => name != null)}
+        />
+      ) : null}
     </>
   );
 }

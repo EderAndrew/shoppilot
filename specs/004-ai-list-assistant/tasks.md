@@ -537,7 +537,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 4 — US1: UI do Assistente (input, loading, error, vazio)
 
-- [ ] T013 [P] Create `SuggestionItemRow` component in `apps/mobile/src/features/ai-assistant/SuggestionItemRow.tsx`
+- [x] T013 [P] Create `SuggestionItemRow` component in `apps/mobile/src/features/ai-assistant/SuggestionItemRow.tsx`
 
   **Objetivo**: Criar o componente de linha de sugestão com checkbox, nome, quantidade/unidade e badge "já na lista" — isolado para poder ser testado independentemente da sheet.
 
@@ -615,7 +615,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T014 [US1] Create `AISuggestionSheet` component with prompt view in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T014 [US1] Create `AISuggestionSheet` component with prompt view in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Criar o bottom sheet principal com a view de input (estado idle/prompt), usando Tamagui `Sheet`. Esta task cobre apenas o estado inicial — outros estados são adicionados em T015 e T016.
 
@@ -704,7 +704,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T015 [US1] Add loading, error, and empty states to `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T015 [US1] Add loading, error, and empty states to `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Completar os estados visuais do assistente para `pending`, `error`, e `success` com 0 sugestões — garantindo que o usuário sempre receba feedback claro.
 
@@ -763,7 +763,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 5 — US2: Preview, Seleção e Tratamento de Duplicados
 
-- [ ] T016 [US2] Add success/suggestions view with selection state to `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T016 [US2] Add success/suggestions view with selection state to `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Implementar a view de preview com lista de sugestões, controle de seleção por `Set<string>`, e botão de confirmação — garantindo que nenhum item seja adicionado à lista sem ação explícita do usuário.
 
@@ -841,7 +841,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 6 — US2: Confirmação e Integração com Produtos Reutilizáveis
 
-- [ ] T017 [US2] Create `useConfirmSuggestions` hook in `apps/mobile/src/features/ai-assistant/useConfirmSuggestions.ts`
+- [x] T017 [US2] Create `useConfirmSuggestions` hook in `apps/mobile/src/features/ai-assistant/useConfirmSuggestions.ts`
 
   **Objetivo**: Implementar a orquestração de confirmação — para cada sugestão selecionada: buscar produto existente, criar produto novo se não encontrar, adicionar item à lista com preço 0. Reutilizar os use cases existentes `SearchProducts`, `CreateProduct`, e `AddShoppingListItem`.
 
@@ -939,7 +939,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T018 [US2] Wire `useConfirmSuggestions` into `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T018 [US2] Wire `useConfirmSuggestions` into `AISuggestionSheet` in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Conectar o hook de confirmação à view de sucesso — passando `listId`, recebendo `isConfirming` e `progress`, fechando o sheet ao final.
 
@@ -969,7 +969,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 7 — Integração com a Tela de Lista
 
-- [ ] T019 [US1] Add AI icon button and wire `AISuggestionSheet` into `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/index.tsx`
+- [x] T019 [US1] Add AI icon button and wire `AISuggestionSheet` into `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/index.tsx`
 
   **Objetivo**: Tornar o assistente de IA acessível a partir da tela de detalhe de lista ativa — adicionando um botão de ícone ao header e renderizando o `AISuggestionSheet` condicionalmente.
 
@@ -1016,7 +1016,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 8 — Robustez e Fallback
 
-- [ ] T020 Add timeout handling to `SupabaseAIRepository` in `apps/mobile/src/infrastructure/repositories/SupabaseAIRepository.ts`
+- [x] T020 Add timeout handling to `SupabaseAIRepository` in `apps/mobile/src/infrastructure/repositories/SupabaseAIRepository.ts`
 
   **Objetivo**: Garantir que uma requisição à Edge Function que não responda em 30s gere um `AIServiceError` com mensagem amigável — sem travar a UI indefinidamente.
 
@@ -1048,7 +1048,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T021 Verify that AI failure does not block manual item creation flow in `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/`
+- [x] T021 Verify that AI failure does not block manual item creation flow in `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/`
 
   **Objetivo**: Confirmar que o fluxo `+ Item` manual funciona normalmente mesmo quando o `SupabaseAIRepository` lança erro — verificação de não-regressão crítica.
 
@@ -1070,7 +1070,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T022 Validate that all items added via AI assistant have correct `user_id` and produce `ITEM_ADDED` events
+- [x] T022 Validate that all items added via AI assistant have correct `user_id` and produce `ITEM_ADDED` events
 
   **Objetivo**: Garantir que os itens adicionados via fluxo de IA respeitam as regras de segurança RLS e auditoria de eventos — sem bypass das regras existentes.
 
@@ -1095,7 +1095,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 9 — UX e Acessibilidade
 
-- [ ] T023 Add auto-focus to prompt `TextArea` when `AISuggestionSheet` opens in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T023 Add auto-focus to prompt `TextArea` when `AISuggestionSheet` opens in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Melhorar a velocidade percebida — teclado abre automaticamente quando o sheet aparece, sem necessidade de tap adicional.
 
@@ -1128,7 +1128,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T024 Add confirmation progress feedback to `AISuggestionSheet` during sequential item addition in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
+- [x] T024 Add confirmation progress feedback to `AISuggestionSheet` during sequential item addition in `apps/mobile/src/features/ai-assistant/AISuggestionSheet.tsx`
 
   **Objetivo**: Mostrar progresso durante a adição sequencial de itens — evitando que o usuário pense que o app travou quando 10+ itens estão sendo adicionados.
 
@@ -1154,7 +1154,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T025 Audit all interactive elements in `ai-assistant/` for accessibility labels and touch targets
+- [x] T025 Audit all interactive elements in `ai-assistant/` for accessibility labels and touch targets
 
   **Objetivo**: Garantir que todos os elementos interativos do assistente de IA tenham `accessibilityLabel` correto e área de toque ≥ 44x44pt (padrão Apple/Google).
 
@@ -1179,7 +1179,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ## Phase 10 — Qualidade e Validação Final
 
-- [ ] T026 [P] Unit test `SuggestShoppingListItems` use case in `apps/mobile/tests/unit/aiSuggestions.test.ts`
+- [x] T026 [P] Unit test `SuggestShoppingListItems` use case in `apps/mobile/tests/unit/aiSuggestions.test.ts`
 
   **Objetivo**: Cobrir a lógica de detecção de duplicatas e anotação de status com testes unitários isolados — use case testável com mock do `AIRepository`.
 
@@ -1224,7 +1224,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T027 [P] Unit test `SupabaseAIRepository` with mocked `supabase.functions.invoke` in `apps/mobile/tests/unit/SupabaseAIRepository.test.ts`
+- [x] T027 [P] Unit test `SupabaseAIRepository` with mocked `supabase.functions.invoke` in `apps/mobile/tests/unit/SupabaseAIRepository.test.ts`
 
   **Objetivo**: Verificar que o adapter de infraestrutura valida respostas, mapeia `SuggestedItem[]` corretamente, e lança `AIServiceError` nas condições de erro.
 
@@ -1251,7 +1251,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T028 [P] Unit test Zod schema in `apps/mobile/tests/unit/aiAssistant.schemas.test.ts`
+- [x] T028 [P] Unit test Zod schema in `apps/mobile/tests/unit/aiAssistant.schemas.test.ts`
 
   **Objetivo**: Cobrir os casos limítrofes de validação do schema — garantindo que entradas inválidas da IA são rejeitadas antes de chegar à UI.
 
@@ -1280,7 +1280,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T029 [P] Unit test `useConfirmSuggestions` hook with mocked use cases in `apps/mobile/tests/unit/useConfirmSuggestions.test.ts`
+- [x] T029 [P] Unit test `useConfirmSuggestions` hook with mocked use cases in `apps/mobile/tests/unit/useConfirmSuggestions.test.ts`
 
   **Objetivo**: Verificar a lógica de correspondência de produtos e orquestração sequencial — sem dependência de Supabase real.
 
@@ -1364,7 +1364,7 @@ Sugira 5 a 15 itens relevantes. Não repita itens já presentes na lista.`;
 
 ---
 
-- [ ] T032 Run full validation suite: typecheck, lint, tests in workspace root
+- [x] T032 Run full validation suite: typecheck, lint, tests in workspace root
 
   **Objetivo**: Confirmar que o branch está pronto para code review — sem erros de tipagem, sem violações de lint, e todos os testes passando.
 
