@@ -75,6 +75,7 @@ export function AISuggestionSheet({ listId, listName, existingItemNames }: Props
 
   return (
     <Sheet
+      modal
       open={isAIAssistantOpen}
       onOpenChange={(open: boolean) => {
         if (!open) handleClose();

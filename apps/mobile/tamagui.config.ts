@@ -1,4 +1,5 @@
 import { defaultConfig } from "@tamagui/config/v5";
+import { animationsReactNative } from "@tamagui/config/v5-rn";
 import { createTamagui } from "tamagui";
 
 import { tamaguiThemeExtension } from "./src/shared/design-system/themes";
@@ -12,7 +13,7 @@ const themes = {
   light: { ...(baseThemes.light ?? {}), ...tamaguiThemeExtension },
 } as typeof defaultConfig.themes;
 
-const tamaguiConfig = createTamagui({ ...defaultConfig, themes });
+const tamaguiConfig = createTamagui({ ...defaultConfig, themes, animations: animationsReactNative });
 
 export type AppTamaguiConfig = typeof tamaguiConfig;
 
