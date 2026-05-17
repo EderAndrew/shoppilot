@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   CheckShoppingListItem,
   RemoveShoppingListItem,
-  UpdateShoppingListItem,
+  type UpdateShoppingListItemUseCaseInput,
 } from "@/application/use-cases/shoppingListItems";
 import type { AddShoppingListItemInput } from "@/application/ports/ShoppingListItemRepository";
 import { queryKeys } from "@/application/query-keys/queryKeys";
@@ -19,12 +19,6 @@ const itemUseCases = {
   remove: new RemoveShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
-    defaultRepositories.userEvents,
-  ),
-  update: new UpdateShoppingListItem(
-    defaultRepositories.shoppingListItems,
-    defaultRepositories.shoppingLists,
-    defaultRepositories.priceHistory,
     defaultRepositories.userEvents,
   ),
 };
@@ -65,8 +59,31 @@ export function useUpdateShoppingListItemMutation(listId: string) {
   const invalidateList = useInvalidateList(listId);
 
   return useMutation({
-    mutationFn: (input: Parameters<typeof itemUseCases.update.execute>[0]) =>
-      itemUseCases.update.execute(input),
+    mutationFn: async (input: UpdateShoppingListItemUseCaseInput) => {
+      const details = await defaultRepositories.shoppingLists.getDetails(input.shoppingListId);
+      if (!details) {
+        throw createAppError({ category: "not_found", message: "Não encontramos essa lista." });
+      }
+      if (details.list.status === "archived") {
+        throw createAppError({
+          category: "forbidden",
+          message: "Esta lista está arquivada e não pode ser modificada.",
+        });
+      }
+      const currentItem = details.items.find((item) => item.id === input.itemId);
+      if (!currentItem) {
+        throw createAppError({ category: "not_found", message: "Não encontramos esse registro." });
+      }
+      const quantity = input.quantity ?? currentItem.quantity;
+      const unitPrice = input.unitPrice ?? currentItem.unitPrice;
+      const totalPrice = Math.round(quantity * unitPrice * 100) / 100;
+      return defaultRepositories.shoppingListItems.update({
+        ...input,
+        quantity,
+        unitPrice,
+        totalPrice,
+      });
+    },
     onSuccess: invalidateList,
   });
 }

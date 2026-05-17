@@ -93,3 +93,19 @@ export function useArchiveShoppingListMutation() {
     },
   });
 }
+
+export function useHydrateListFromRemote(listId: string) {
+  const queryClient = useQueryClient();
+
+  const { isPending: isHydrating, error, mutate: hydrateList } = useMutation({
+    mutationFn: () =>
+      defaultRepositories.shoppingLists.hydrateFromRemote?.(listId) ?? Promise.resolve(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.shoppingLists.detail(listId) });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.shoppingLists.active() });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.shoppingLists.archived() });
+    },
+  });
+
+  return { isHydrating, error, hydrateList };
+}

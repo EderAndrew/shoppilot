@@ -1,5 +1,6 @@
 import { CheckCircle, Plus, Sparkles } from "@tamagui/lucide-icons-2";
 import { type Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Alert } from "react-native";
 import { Text, XStack, YStack } from "tamagui";
 
@@ -12,6 +13,7 @@ import { BudgetSummary } from "../../../../../features/shopping-list/BudgetSumma
 import { OverBudgetAlert } from "../../../../../features/shopping-list/OverBudgetAlert";
 import {
   useCompleteShoppingListMutation,
+  useHydrateListFromRemote,
   useShoppingListDetailsQuery,
 } from "../../../../../features/shopping-list/shoppingList.queries";
 import { useActiveListRealtime } from "../../../../../features/shopping-list/useActiveListRealtime";
@@ -37,7 +39,12 @@ export default function ShoppingListDetailsScreen() {
   const removeItem = useRemoveShoppingListItemMutation(listId);
   const checkItem = useCheckShoppingListItemMutation(listId);
   const { setAIAssistantOpen } = useUiStore();
+  const { hydrateList } = useHydrateListFromRemote(listId);
   useActiveListRealtime(listId);
+
+  useEffect(() => {
+    hydrateList();
+  }, [listId]); // hydrateList (TanStack Query mutate) is stable across renders
 
   const confirmCompleteList = () => {
     Alert.alert("Lista completa?", "Isso remove a lista da lista de compras ativas.", [

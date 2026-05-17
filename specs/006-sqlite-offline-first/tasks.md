@@ -96,13 +96,13 @@ apps/mobile/tests/security/              # Testes de isolamento por user_id
 
 ### Tests para User Story 2 ⚠️
 
-- [ ] T022 [P] [US2] Adicionar casos em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `update()` em item com `remote_id` define `sync_status = 'pending_update'`; `update()` em item sem `remote_id` mantém `sync_status = 'pending_create'`
+- [x] T022 [P] [US2] Adicionar casos em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `update()` em item com `remote_id` define `sync_status = 'pending_update'`; `update()` em item sem `remote_id` mantém `sync_status = 'pending_create'`
 
 ### Implementation para User Story 2
 
-- [ ] T023 [US2] Implementar método `update()` em `LocalFirstShoppingListItemRepository.ts`: (1) lê item atual do SQLite para checar `remote_id`, (2) define `newSyncStatus = remoteId ? 'pending_update' : 'pending_create'`, (3) chama `SQLiteRepo.update(localId, { ...fields, syncStatus: newSyncStatus })`, (4) retorna registro atualizado, (5) chama `void this.syncUpdate(localRecord, input)` se tiver `remote_id`
-- [ ] T024 [US2] Implementar `syncUpdate(localRecord, input)` privado em `LocalFirstShoppingListItemRepository.ts`: verifica `isConnected()`, chama `SupabaseShoppingListItemRepository.update({ itemId: localRecord.remoteId, ...input })`, em sucesso chama `SQLiteRepo.updateSyncStatus(localId, 'synced')` e invalida cache TQ, em erro loga e mantém `pending_update`
-- [ ] T025 [US2] Verificar que `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/item-[id].tsx` (tela de edição) navega de volta imediatamente após `onSuccess` da `useUpdateShoppingListItemMutation` — a mutation retorna local rápido
+- [x] T023 [US2] Implementar método `update()` em `LocalFirstShoppingListItemRepository.ts`: (1) lê item atual do SQLite para checar `remote_id`, (2) define `newSyncStatus = remoteId ? 'pending_update' : 'pending_create'`, (3) chama `SQLiteRepo.update(localId, { ...fields, syncStatus: newSyncStatus })`, (4) retorna registro atualizado, (5) chama `void this.syncUpdate(localRecord, input)` se tiver `remote_id`
+- [x] T024 [US2] Implementar `syncUpdate(localRecord, input)` privado em `LocalFirstShoppingListItemRepository.ts`: verifica `isConnected()`, chama `SupabaseShoppingListItemRepository.update({ itemId: localRecord.remoteId, ...input })`, em sucesso chama `SQLiteRepo.updateSyncStatus(localId, 'synced')` e invalida cache TQ, em erro loga e mantém `pending_update`
+- [x] T025 [US2] Verificar que `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/item-[id].tsx` (tela de edição) navega de volta imediatamente após `onSuccess` da `useUpdateShoppingListItemMutation` — a mutation retorna local rápido
 
 **Checkpoint**: US1 e US2 funcionam independentemente. Adicionar e editar são instantâneos.
 
@@ -116,16 +116,16 @@ apps/mobile/tests/security/              # Testes de isolamento por user_id
 
 ### Tests para User Story 3 ⚠️
 
-- [ ] T026 [P] [US3] Escrever teste unitário em `apps/mobile/tests/unit/infrastructure/LocalFirstShoppingListRepository.test.ts`: `getDetails()` retorna dados do SQLite quando Supabase está inacessível
-- [ ] T027 [P] [US3] Adicionar caso em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `upsertFromRemote()` não sobrescreve item com `sync_status !== 'synced'`
+- [x] T026 [P] [US3] Escrever teste unitário em `apps/mobile/tests/unit/infrastructure/LocalFirstShoppingListRepository.test.ts`: `getDetails()` retorna dados do SQLite quando Supabase está inacessível
+- [x] T027 [P] [US3] Adicionar caso em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `upsertFromRemote()` não sobrescreve item com `sync_status !== 'synced'`
 
 ### Implementation para User Story 3
 
-- [ ] T028 [US3] Completar `LocalFirstShoppingListRepository.ts` com métodos `list(userId)`, `listActive(userId)`, `listArchived(userId)` lendo do SQLite; e método `archive()`, `complete()`, `create()` seguindo padrão local-first (similar ao de itens)
-- [ ] T029 [US3] Atualizar `apps/mobile/src/features/shopping-list/shoppingList.queries.ts` — `queryFn` de `useActiveShoppingListsQuery`, `useArchivedShoppingListsQuery` e `useShoppingListDetailsQuery` passam a ler do SQLite via `LocalFirstRepo` (já wired em `defaultRepositories`)
-- [ ] T030 [US3] Adicionar `useHydrateListFromRemote(listId: string)` em `apps/mobile/src/features/shopping-list/shoppingList.queries.ts`: busca detalhes do Supabase via `SupabaseShoppingListRepository.getDetails()`, faz upsert seguro no SQLite, invalida cache TQ; retorna `{ isHydrating, error }`
-- [ ] T031 [US3] Adicionar `useEffect(() => { hydrateList(listId) }, [listId])` na tela de detalhe da lista `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/index.tsx` (ou o arquivo real da tela de detalhe), importando `useHydrateListFromRemote`
-- [ ] T032 [US3] Implementar `upsertFromRemote(record, userId, localListId)` em `SQLiteShoppingListItemRepository.ts`: se existir item local com mesmo `remote_id` e `sync_status !== 'synced'`, retornar sem sobrescrever; caso contrário, fazer upsert com `sync_status = 'synced'`
+- [x] T028 [US3] Completar `LocalFirstShoppingListRepository.ts` com métodos `list(userId)`, `listActive(userId)`, `listArchived(userId)` lendo do SQLite; e método `archive()`, `complete()`, `create()` seguindo padrão local-first (similar ao de itens)
+- [x] T029 [US3] Atualizar `apps/mobile/src/features/shopping-list/shoppingList.queries.ts` — `queryFn` de `useActiveShoppingListsQuery`, `useArchivedShoppingListsQuery` e `useShoppingListDetailsQuery` passam a ler do SQLite via `LocalFirstRepo` (já wired em `defaultRepositories`)
+- [x] T030 [US3] Adicionar `useHydrateListFromRemote(listId: string)` em `apps/mobile/src/features/shopping-list/shoppingList.queries.ts`: busca detalhes do Supabase via `SupabaseShoppingListRepository.getDetails()`, faz upsert seguro no SQLite, invalida cache TQ; retorna `{ isHydrating, error }`
+- [x] T031 [US3] Adicionar `useEffect(() => { hydrateList(listId) }, [listId])` na tela de detalhe da lista `apps/mobile/src/app/(app)/(tabs)/lists/[listId]/index.tsx` (ou o arquivo real da tela de detalhe), importando `useHydrateListFromRemote`
+- [x] T032 [US3] Implementar `upsertFromRemote(record, userId, localListId)` em `SQLiteShoppingListItemRepository.ts`: se existir item local com mesmo `remote_id` e `sync_status !== 'synced'`, retornar sem sobrescrever; caso contrário, fazer upsert com `sync_status = 'synced'`
 
 **Checkpoint**: App funciona offline. Listas e itens carregam do SQLite sem depender do Supabase.
 
@@ -139,14 +139,14 @@ apps/mobile/tests/security/              # Testes de isolamento por user_id
 
 ### Tests para User Story 4 ⚠️
 
-- [ ] T033 [P] [US4] Adicionar casos em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `softDelete()` define `deleted_at` e `sync_status = 'pending_delete'`; `findByListId()` não retorna itens com `deleted_at` preenchido; `hardDelete()` remove o registro completamente
-- [ ] T034 [P] [US4] Adicionar caso em `apps/mobile/tests/unit/infrastructure/LocalFirstShoppingListItemRepository.test.ts`: item sem `remote_id` é hard-deleted localmente; item com `remote_id` recebe soft delete + `pending_delete`
+- [x] T033 [P] [US4] Adicionar casos em `apps/mobile/tests/unit/infrastructure/SQLiteShoppingListItemRepository.test.ts`: `softDelete()` define `deleted_at` e `sync_status = 'pending_delete'`; `findByListId()` não retorna itens com `deleted_at` preenchido; `hardDelete()` remove o registro completamente
+- [x] T034 [P] [US4] Adicionar caso em `apps/mobile/tests/unit/infrastructure/LocalFirstShoppingListItemRepository.test.ts`: item sem `remote_id` é hard-deleted localmente; item com `remote_id` recebe soft delete + `pending_delete`
 
 ### Implementation para User Story 4
 
-- [ ] T035 [US4] Implementar método `remove(itemId)` em `LocalFirstShoppingListItemRepository.ts`: (1) lê item atual do SQLite para checar `remote_id`, (2a) se sem `remote_id`: chama `SQLiteRepo.hardDelete(localId)` e retorna, (2b) se com `remote_id`: chama `SQLiteRepo.softDelete(localId)` definindo `deleted_at` + `sync_status: 'pending_delete'`, (3) retorna, (4) chama `void this.syncDelete(remoteId, localId)` se houver `remote_id`
-- [ ] T036 [US4] Implementar `syncDelete(remoteId, localId)` privado em `LocalFirstShoppingListItemRepository.ts`: verifica `isConnected()`, chama `SupabaseShoppingListItemRepository.remove(remoteId)`, em sucesso pode manter soft-delete local (para auditoria) ou chamar `hardDelete`, em erro loga e mantém `pending_delete`
-- [ ] T037 [US4] Verificar que `upsertFromRemote()` em `SQLiteShoppingListItemRepository.ts` nunca reintroduz item com `deleted_at` preenchido — adicionar `WHERE deleted_at IS NULL` na condição de busca por `remote_id`
+- [x] T035 [US4] Implementar método `remove(itemId)` em `LocalFirstShoppingListItemRepository.ts`: (1) lê item atual do SQLite para checar `remote_id`, (2a) se sem `remote_id`: chama `SQLiteRepo.hardDelete(localId)` e retorna, (2b) se com `remote_id`: chama `SQLiteRepo.softDelete(localId)` definindo `deleted_at` + `sync_status: 'pending_delete'`, (3) retorna, (4) chama `void this.syncDelete(remoteId, localId)` se houver `remote_id`
+- [x] T036 [US4] Implementar `syncDelete(remoteId, localId)` privado em `LocalFirstShoppingListItemRepository.ts`: verifica `isConnected()`, chama `SupabaseShoppingListItemRepository.remove(remoteId)`, em sucesso chama `hardDelete` para limpar SQLite, em erro loga e mantém `pending_delete`
+- [x] T037 [US4] Verificar que `upsertFromRemote()` em `SQLiteShoppingListItemRepository.ts` nunca reintroduz item com `deleted_at` preenchido — busca por `remote_id` sem filtro e checa `existing.deleted_at !== null` explicitamente
 
 **Checkpoint**: US1–US4 funcionam independentemente. Todas as operações CRUD são instantâneas.
 

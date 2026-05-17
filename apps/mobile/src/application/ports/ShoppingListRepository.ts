@@ -43,4 +43,5 @@ export type ShoppingListRepository = {
   getDetails(listId: string): Promise<ShoppingListDetails | null>;
   complete(input: CompleteShoppingListInput): Promise<ShoppingListRecord>;
   archive(input: ArchiveShoppingListInput): Promise<ShoppingListRecord>;
+  hydrateFromRemote?(listId: string): Promise<void>;
 };

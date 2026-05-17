@@ -27,6 +27,6 @@ export const defaultRepositories = createRepositoryContainer({
     auth,
     queryClient,
   ),
-  shoppingLists: new LocalFirstShoppingListRepository(supabaseShoppingLists),
+  shoppingLists: new LocalFirstShoppingListRepository(supabaseShoppingLists, auth, queryClient),
   userEvents,
 });

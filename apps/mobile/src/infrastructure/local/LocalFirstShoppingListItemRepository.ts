@@ -63,11 +63,44 @@ export class LocalFirstShoppingListItemRepository implements ShoppingListItemRep
   }
 
   async update(input: UpdateShoppingListItemInput): Promise<ShoppingListItemRecord> {
-    return this.supabaseRepo.update(input)
+    let localItem = await this.sqliteRepo.findById(input.itemId)
+    if (!localItem) localItem = await this.sqliteRepo.findByRemoteId(input.itemId)
+
+    if (!localItem) {
+      return this.supabaseRepo.update(input)
+    }
+
+    const newSyncStatus = localItem.remoteId ? 'pending_update' : 'pending_create'
+    const updatedItem = await this.sqliteRepo.update(localItem.id, {
+      quantity: input.quantity,
+      unitPrice: input.unitPrice,
+      totalPrice: input.totalPrice,
+      bought: input.bought,
+      syncStatus: newSyncStatus,
+    })
+
+    if (localItem.remoteId) {
+      void this.syncUpdate(updatedItem, input)
+    }
+
+    return updatedItem
   }
 
   async remove(itemId: string): Promise<void> {
-    return this.supabaseRepo.remove(itemId)
+    let localItem = await this.sqliteRepo.findById(itemId)
+    if (!localItem) localItem = await this.sqliteRepo.findByRemoteId(itemId)
+
+    if (!localItem) {
+      return this.supabaseRepo.remove(itemId)
+    }
+
+    if (!localItem.remoteId) {
+      await this.sqliteRepo.hardDelete(localItem.id)
+      return
+    }
+
+    await this.sqliteRepo.softDelete(localItem.id)
+    void this.syncDelete(localItem.remoteId, localItem.id, localItem.shoppingListId)
   }
 
   async setBought(input: SetShoppingListItemBoughtInput): Promise<ShoppingListItemRecord> {
@@ -78,6 +111,44 @@ export class LocalFirstShoppingListItemRepository implements ShoppingListItemRep
     const localItems = await this.sqliteRepo.findByListId(shoppingListId)
     if (localItems.length > 0) return localItems
     return this.supabaseRepo.listByShoppingList(shoppingListId)
+  }
+
+  private async syncDelete(remoteId: string, localId: string, listId: string): Promise<void> {
+    try {
+      if (!await isConnected()) return
+      await this.supabaseRepo.remove(remoteId)
+      await this.sqliteRepo.hardDelete(localId)
+      void this.queryClient.invalidateQueries({
+        queryKey: queryKeys.shoppingLists.items(listId),
+      })
+      void this.queryClient.invalidateQueries({
+        queryKey: queryKeys.shoppingLists.detail(listId),
+      })
+    } catch {
+      logger.warn('syncDelete: falha ao sincronizar remoção de item', { itemId: localId })
+    }
+  }
+
+  private async syncUpdate(localRecord: LocalItemRecord, input: UpdateShoppingListItemInput): Promise<void> {
+    try {
+      if (!await isConnected()) return
+
+      await this.supabaseRepo.update({
+        ...input,
+        itemId: localRecord.remoteId!,
+      })
+
+      await this.sqliteRepo.updateSyncStatus(localRecord.id, 'synced')
+
+      void this.queryClient.invalidateQueries({
+        queryKey: queryKeys.shoppingLists.items(localRecord.shoppingListId),
+      })
+      void this.queryClient.invalidateQueries({
+        queryKey: queryKeys.shoppingLists.detail(localRecord.shoppingListId),
+      })
+    } catch {
+      logger.warn('syncUpdate: falha ao sincronizar atualização de item', { itemId: localRecord.id })
+    }
   }
 
   private async syncCreate(localRecord: LocalItemRecord, input: AddShoppingListItemInput): Promise<void> {

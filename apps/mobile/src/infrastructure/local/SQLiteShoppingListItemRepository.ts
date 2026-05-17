@@ -151,18 +151,19 @@ export class SQLiteShoppingListItemRepository {
     localListId: string,
   ): Promise<LocalItemRecord> {
     const existing = await this.db.getFirstAsync<ItemRow>(
-      'SELECT * FROM local_shopping_list_items WHERE remote_id = ? AND deleted_at IS NULL',
+      'SELECT * FROM local_shopping_list_items WHERE remote_id = ?',
       [record.remoteId],
     )
 
     if (existing) {
+      if (existing.deleted_at !== null) return itemRowToRecord(existing)
       if (existing.sync_status !== 'synced') return itemRowToRecord(existing)
       await this.db.runAsync(
         `UPDATE local_shopping_list_items
-           SET product_name = ?, brand = ?, quantity = ?, unit_price = ?, total_price = ?,
+           SET list_id = ?, product_name = ?, brand = ?, quantity = ?, unit_price = ?, total_price = ?,
                bought = ?, updated_at = ?
          WHERE id = ?`,
-        [record.productName, record.brand ?? null, record.quantity,
+        [localListId, record.productName, record.brand ?? null, record.quantity,
           record.unitPrice, record.totalPrice, record.bought ? 1 : 0,
           record.updatedAt, existing.id],
       )
