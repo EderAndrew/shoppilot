@@ -8,6 +8,7 @@ import { ScreenContainer } from "../../../../shared/ui/ScreenContainer";
 import { SectionHeader } from "../../../../shared/ui/SectionHeader";
 import { AppButton } from "../../../../shared/ui/AppButton";
 import { colors, typography } from "../../../../shared/design-system/tokens";
+import { getAppVersion } from "../../../../shared/utils/appVersion";
 
 export default function UserScreen() {
   const { user } = useAuthSession();
@@ -30,6 +31,9 @@ export default function UserScreen() {
         >
           {logout.isPending ? "Saindo…" : "Sair"}
         </AppButton>
+        <Text {...typography.caption} color={colors.textSecondary}>
+          Versão {getAppVersion()}
+        </Text>
       </YStack>
     </ScreenContainer>
   );

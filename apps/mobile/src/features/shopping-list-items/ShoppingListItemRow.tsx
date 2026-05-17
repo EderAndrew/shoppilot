@@ -9,6 +9,7 @@ import { AppListItem } from "@/shared/ui/AppListItem";
 
 export type ShoppingListItemRowProps = {
   item: ShoppingListItemRecord;
+  isReadOnly?: boolean;
   onEdit: () => void;
   onToggleBought: (bought: boolean) => void;
   onRemove: () => void;
@@ -16,13 +17,14 @@ export type ShoppingListItemRowProps = {
 
 export function ShoppingListItemRow({
   item,
+  isReadOnly = false,
   onEdit,
   onRemove,
   onToggleBought,
 }: ShoppingListItemRowProps) {
   return (
     <XStack
-      alignItems="center"
+      style={{ alignItems: "center" }}
       borderBottomWidth={1}
       borderColor={colors.border}
     >
@@ -37,19 +39,23 @@ export function ShoppingListItemRow({
       />
       <AppListItem
         accessibilityLabel={`Editar ${item.productName ?? "item da lista"}`}
-        subtitle={`${item.quantity} × ${formatMoney(item.unitPrice)}`}
+        subtitle={[item.productBrand, `${item.quantity} × ${formatMoney(item.unitPrice)}`]
+          .filter(Boolean)
+          .join(" · ")}
         title={item.productName ?? `Produto ${item.productId.slice(0, 8)}`}
         value={formatMoney(item.totalPrice)}
         variant={item.bought ? "completed" : "default"}
-        onPress={onEdit}
+        onPress={isReadOnly ? undefined : onEdit}
       />
-      <AppButton
-        accessibilityLabel={`Remover ${item.productName ?? "item da lista"}`}
-        icon={<Trash2 size={20} />}
-        iconOnly
-        variant="subtle"
-        onPress={onRemove}
-      />
+      {!isReadOnly ? (
+        <AppButton
+          accessibilityLabel={`Remover ${item.productName ?? "item da lista"}`}
+          icon={<Trash2 size={20} />}
+          iconOnly
+          variant="subtle"
+          onPress={onRemove}
+        />
+      ) : null}
     </XStack>
   );
 }

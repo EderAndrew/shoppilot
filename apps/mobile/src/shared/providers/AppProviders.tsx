@@ -5,6 +5,7 @@ import { TamaguiProvider } from "tamagui";
 
 import { createAppQueryClient } from "../../application/query-keys/queryClient";
 import { AuthSessionProvider } from "../../features/auth/useAuthSession";
+import { SessionRestorer } from "../../features/auth/SessionRestorer";
 import tamaguiConfig from "../../../tamagui.config";
 
 export function AppProviders({ children }: PropsWithChildren) {
@@ -14,7 +15,10 @@ export function AppProviders({ children }: PropsWithChildren) {
     <TamaguiProvider config={tamaguiConfig} defaultTheme="light">
       <PortalProvider shouldAddRootHost>
         <QueryClientProvider client={queryClient}>
-          <AuthSessionProvider>{children}</AuthSessionProvider>
+          <AuthSessionProvider initialState="loading">
+            <SessionRestorer />
+            {children}
+          </AuthSessionProvider>
         </QueryClientProvider>
       </PortalProvider>
     </TamaguiProvider>

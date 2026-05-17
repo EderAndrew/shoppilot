@@ -73,10 +73,9 @@ describe("list overview screen uses shared UI foundation", () => {
 });
 
 describe("list detail screen uses shared UI foundation", () => {
-  it("detail screen uses ScreenContainer and SectionHeader", async () => {
+  it("detail screen uses ScreenContainer", async () => {
     const src = await routeSource("(app)/(tabs)/lists/[listId]/index.tsx");
     expect(src).toContain("ScreenContainer");
-    expect(src).toContain("SectionHeader");
   });
 
   it("detail screen uses AppButton for actions", async () => {

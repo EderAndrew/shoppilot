@@ -27,6 +27,7 @@ function repository(): ProductRepository {
     ]),
     getById: vi.fn(async () => product),
     search: vi.fn(async () => [product]),
+    updateBrand: vi.fn(async () => product),
   };
 }
 

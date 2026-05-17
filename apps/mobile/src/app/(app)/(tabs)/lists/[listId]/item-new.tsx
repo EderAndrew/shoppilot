@@ -51,7 +51,7 @@ export default function NewShoppingListItemScreen() {
             }
 
             createProduct.mutate(
-              { name: values.productName ?? "Produto" },
+              { name: values.productName ?? "Produto", brand: values.productBrand?.trim() || null },
               {
                 onSuccess: (product) =>
                   addSelectedProductItem({

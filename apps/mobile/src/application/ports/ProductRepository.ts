@@ -28,9 +28,15 @@ export type ProductDuplicateCandidateInput = {
   unit?: string | null;
 };
 
+export type UpdateProductBrandInput = {
+  id: string;
+  brand: string | null;
+};
+
 export type ProductRepository = {
   create(input: CreateProductInput): Promise<ProductRecord>;
   search(input: ProductSearchInput): Promise<ProductRecord[]>;
   getById(productId: string): Promise<ProductRecord | null>;
   findDuplicateCandidates(input: ProductDuplicateCandidateInput): Promise<ProductRecord[]>;
+  updateBrand(input: UpdateProductBrandInput): Promise<ProductRecord>;
 };

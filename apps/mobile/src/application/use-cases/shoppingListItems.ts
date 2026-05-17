@@ -57,6 +57,11 @@ export class AddShoppingListItem {
   ) {}
 
   async execute(input: Omit<AddShoppingListItemInput, "totalPrice">): Promise<ItemMutationResult> {
+    const currentDetails = requireDetails(await this.shoppingLists.getDetails(input.shoppingListId));
+    if (currentDetails.list.status === "archived") {
+      throw createAppError({ category: "forbidden", message: "Esta lista está arquivada e não pode ser modificada." });
+    }
+
     const previousPrice = this.priceHistory
       ? await this.priceHistory.getLatestPreviousPrice({ productId: input.productId })
       : null;
@@ -133,6 +138,11 @@ export class UpdateShoppingListItem {
     const currentDetails = requireDetails(
       await this.shoppingLists.getDetails(input.shoppingListId),
     );
+
+    if (currentDetails.list.status === "archived") {
+      throw createAppError({ category: "forbidden", message: "Esta lista está arquivada e não pode ser modificada." });
+    }
+
     const currentItem = currentDetails.items.find((item) => item.id === input.itemId);
 
     if (!currentItem) {
@@ -215,10 +225,16 @@ export class RemoveShoppingListItem {
   ) {}
 
   async execute(input: { itemId: string; shoppingListId: string }): Promise<ItemMutationResult> {
+    const currentDetails = requireDetails(
+      await this.shoppingLists.getDetails(input.shoppingListId),
+    );
+
+    if (currentDetails.list.status === "archived") {
+      throw createAppError({ category: "forbidden", message: "Esta lista está arquivada e não pode ser modificada." });
+    }
+
     const currentItem = this.userEvents
-      ? requireDetails(await this.shoppingLists.getDetails(input.shoppingListId)).items.find(
-          (item) => item.id === input.itemId,
-        )
+      ? currentDetails.items.find((item) => item.id === input.itemId) ?? null
       : null;
 
     if (this.userEvents && !currentItem) {

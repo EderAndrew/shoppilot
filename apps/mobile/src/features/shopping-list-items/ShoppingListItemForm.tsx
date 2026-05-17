@@ -15,6 +15,7 @@ const EMPTY_PRODUCT_ID = "00000000-0000-0000-0000-000000000000";
 
 export type ShoppingListItemFormValuesWithProductName = ShoppingListItemFormValues & {
   productName?: string;
+  productBrand?: string;
 };
 
 export type ShoppingListItemFormProps = {
@@ -23,6 +24,7 @@ export type ShoppingListItemFormProps = {
   error?: unknown;
   isSubmitting?: boolean;
   productNameRequired?: boolean;
+  showBrandField?: boolean;
   submitLabel?: string;
   onSubmit: (values: ShoppingListItemFormValuesWithProductName) => void;
 };
@@ -34,11 +36,13 @@ export function ShoppingListItemForm({
   isSubmitting = false,
   onSubmit,
   productNameRequired = false,
+  showBrandField = false,
   submitLabel = "Salvar item",
 }: ShoppingListItemFormProps) {
   const form = useForm<ShoppingListItemFormValuesWithProductName>({
     defaultValues: {
       bought: false,
+      productBrand: "",
       productId: "",
       productName: "",
       quantity: 1,
@@ -71,6 +75,23 @@ export function ShoppingListItemForm({
               error={fieldState.error?.message}
               id="productName"
               label="Nome do novo produto"
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              value={field.value ?? ""}
+            />
+          )}
+        />
+      ) : null}
+      {productNameRequired || showBrandField ? (
+        <Controller
+          control={form.control}
+          name="productBrand"
+          render={({ field, fieldState }) => (
+            <AppInput
+              accessibilityLabel="Marca (opcional)"
+              error={fieldState.error?.message}
+              id="productBrand"
+              label="Marca (opcional)"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
               value={field.value ?? ""}
@@ -131,6 +152,7 @@ export function ShoppingListItemForm({
           if (parsed.success)
             onSubmit({
               ...parsed.data,
+              productBrand: values.productBrand,
               productId: values.productId || "",
               productName: values.productName,
             });

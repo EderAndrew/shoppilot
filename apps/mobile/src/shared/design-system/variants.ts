@@ -45,6 +45,7 @@ export const buttonVariants: Record<ButtonVariant, {
 export const buttonDisabledStyle = {
   backgroundColor: colors.disabledSurface,
   borderColor: 'transparent',
+  borderWidth: 0,
   color: colors.disabled,
   opacity: 0.7,
 } as const;
