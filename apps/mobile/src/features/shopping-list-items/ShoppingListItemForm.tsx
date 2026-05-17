@@ -61,6 +61,8 @@ export function ShoppingListItemForm({
           selectedProductId={selectedProductId}
           onSelect={(product) => {
             form.setValue("productId", product.id);
+            form.setValue("productName", product.name);
+            form.setValue("productBrand", product.brand ?? "");
             form.clearErrors("productId");
           }}
         />

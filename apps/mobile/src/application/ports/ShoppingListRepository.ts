@@ -12,6 +12,7 @@ export type ShoppingListRecord = {
   updatedAt: string;
   completedAt: string | null;
   archivedAt: string | null;
+  syncStatus?: import("@/infrastructure/local/sync.types").SyncStatus;
 };
 
 export type CreateShoppingListInput = {

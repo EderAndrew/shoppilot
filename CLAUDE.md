@@ -29,6 +29,16 @@ pnpm --filter mobile test:watch
 
 # Format
 pnpm format
+
+# Export native builds
+pnpm mobile:export:ios
+pnpm mobile:export:android
+
+# EAS builds (inside apps/mobile)
+pnpm mobile:eas build
+
+# Regenerate Supabase database types after schema changes
+pnpm --filter mobile exec npx supabase gen types typescript --local > src/infrastructure/supabase/database.types.ts
 ```
 
 ## Repository Layout
@@ -46,6 +56,12 @@ apps/mobile/src/
     design-system/  tokens.ts, themes.ts, variants.ts — Tamagui visual foundation
     ui/             Shared primitives: ScreenContainer, AppCard, AppButton, AppInput, etc.
     feedback/       Async state helpers
+    errors/         AppError class and toAppError() / getSafeErrorMessage() mappers
+    logging/        logger.ts — structured logger (sanitizes tokens before output)
+    formatters/     Currency, date, and other display formatters
+    forms/          Shared react-hook-form helpers and field schemas
+    state/          uiStore.ts — Zustand store for transient UI state
+    providers/      AppProviders.tsx — TanStack Query + Tamagui provider tree
 packages/
   config/           Zod-based environment config shared across workspace
   shared/           Shared domain/event types
@@ -127,6 +143,18 @@ Vitest runs in node environment with `@` aliased to `src/`. To run a single file
 ```bash
 pnpm --filter mobile test tests/security/rls-policies.test.ts
 ```
+
+## Error Handling
+
+All infrastructure code maps Supabase/provider errors through `toAppError()` from `src/shared/errors/appError.ts`. It translates HTTP status codes and Postgres error codes into typed `AppErrorCategory` values (`auth_required`, `not_found`, `conflict`, `validation_error`, `network_error`, `forbidden`, `unexpected`) and strips any message that matches credentials/SQL patterns before surfacing it to the UI. Always use `toAppError()` at infrastructure boundaries — never rethrow raw Supabase errors.
+
+## Path Aliases
+
+In both the app and vitest configs, `@` resolves to `apps/mobile/src/`. Workspace packages are aliased as `@shop-pilot/config` and `@shop-pilot/shared`.
+
+## UI Language
+
+All user-facing strings are in Brazilian Portuguese. New screens and error messages should follow this convention.
 
 ## Feature Specs
 

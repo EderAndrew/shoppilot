@@ -43,6 +43,8 @@ export default function NewShoppingListItemScreen() {
             if (values.productId) {
               addSelectedProductItem({
                 productId: values.productId,
+                productName: values.productName,
+                productBrand: values.productBrand,
                 quantity: values.quantity,
                 shoppingListId: listId,
                 unitPrice: values.unitPrice,
@@ -56,6 +58,8 @@ export default function NewShoppingListItemScreen() {
                 onSuccess: (product) =>
                   addSelectedProductItem({
                     productId: product.id,
+                    productName: values.productName,
+                    productBrand: values.productBrand,
                     quantity: values.quantity,
                     shoppingListId: listId,
                     unitPrice: values.unitPrice,

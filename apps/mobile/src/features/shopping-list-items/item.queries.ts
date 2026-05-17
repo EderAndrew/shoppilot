@@ -1,21 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
-  AddShoppingListItem,
   CheckShoppingListItem,
   RemoveShoppingListItem,
   UpdateShoppingListItem,
 } from "@/application/use-cases/shoppingListItems";
+import type { AddShoppingListItemInput } from "@/application/ports/ShoppingListItemRepository";
 import { queryKeys } from "@/application/query-keys/queryKeys";
 import { defaultRepositories } from "@/infrastructure/repositories/defaultRepositories";
+import { createAppError } from "@/shared/errors/appError";
 
 const itemUseCases = {
-  add: new AddShoppingListItem(
-    defaultRepositories.shoppingListItems,
-    defaultRepositories.shoppingLists,
-    defaultRepositories.priceHistory,
-    defaultRepositories.userEvents,
-  ),
   check: new CheckShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
@@ -48,8 +43,20 @@ export function useAddShoppingListItemMutation(listId: string) {
   const invalidateList = useInvalidateList(listId);
 
   return useMutation({
-    mutationFn: (input: Parameters<typeof itemUseCases.add.execute>[0]) =>
-      itemUseCases.add.execute(input),
+    mutationFn: async (input: Omit<AddShoppingListItemInput, "totalPrice">) => {
+      const details = await defaultRepositories.shoppingLists.getDetails(input.shoppingListId);
+      if (!details) {
+        throw createAppError({ category: "not_found", message: "Não encontramos essa lista." });
+      }
+      if (details.list.status === "archived") {
+        throw createAppError({
+          category: "forbidden",
+          message: "Esta lista está arquivada e não pode ser modificada.",
+        });
+      }
+      const totalPrice = Math.round(input.quantity * input.unitPrice * 100) / 100;
+      return defaultRepositories.shoppingListItems.add({ ...input, totalPrice });
+    },
     onSuccess: invalidateList,
   });
 }

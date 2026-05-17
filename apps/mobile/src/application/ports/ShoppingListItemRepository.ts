@@ -11,6 +11,7 @@ export type ShoppingListItemRecord = {
   bought: boolean;
   createdAt: string;
   updatedAt: string;
+  syncStatus?: import("@/infrastructure/local/sync.types").SyncStatus;
 };
 
 export type AddShoppingListItemInput = {
@@ -19,6 +20,8 @@ export type AddShoppingListItemInput = {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  productName?: string | null;
+  productBrand?: string | null;
 };
 
 export type UpdateShoppingListItemInput = {
