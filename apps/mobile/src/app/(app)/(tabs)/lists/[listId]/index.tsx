@@ -157,7 +157,7 @@ export default function ShoppingListDetailsScreen() {
                       key={item.id}
                       onEdit={() =>
                         router.push(
-                          `/(app)/(tabs)/lists/${listId}/item-${item.id}` as Href,
+                          `/(app)/(tabs)/lists/${listId}/${item.id}` as Href,
                         )
                       }
                       onRemove={() =>

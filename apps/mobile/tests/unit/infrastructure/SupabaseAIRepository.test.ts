@@ -8,6 +8,7 @@ import {
   AIServiceError,
   SupabaseAIRepository,
 } from "../../../src/infrastructure/repositories/SupabaseAIRepository";
+import type { ShopPilotSupabaseClient } from "../../../src/infrastructure/supabase/client";
 
 const validPayload = {
   suggestions: [
@@ -19,7 +20,7 @@ const validPayload = {
 function makeRepo(result: { data: unknown; error: unknown }): SupabaseAIRepository {
   const client = {
     functions: { invoke: vi.fn().mockResolvedValue(result) },
-  } as any;
+  } as unknown as ShopPilotSupabaseClient;
   return new SupabaseAIRepository(client);
 }
 

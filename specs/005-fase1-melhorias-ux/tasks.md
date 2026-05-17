@@ -112,9 +112,9 @@ These three tasks unblock US2 (item editing) and US3 (brand field). Complete Pha
 
 ## Phase 8: Polish & Quality
 
-- [ ] T019 Run `pnpm typecheck` and fix all TypeScript errors introduced by the changes above
-- [ ] T020 Run `pnpm lint` and fix all linting errors
-- [ ] T021 Run `pnpm --filter mobile test` and fix any failing tests (particularly `tests/unit/infrastructure/shoppingMappers.test.ts` and `tests/security/repository-ownership.test.ts` may be affected by the mapper and use-case changes)
+- [x] T019 Run `pnpm typecheck` and fix all TypeScript errors introduced by the changes above
+- [x] T020 Run `pnpm lint` and fix all linting errors — created `eslint.config.js` (ESLint v10 flat config); fixed `as any` in `SupabaseAIRepository.test.ts` → zero errors, zero warnings
+- [x] T021 Run `pnpm --filter mobile test` and fix any failing tests (particularly `tests/unit/infrastructure/shoppingMappers.test.ts` and `tests/security/repository-ownership.test.ts` may be affected by the mapper and use-case changes)
 - [ ] T022 Manual smoke test: (1) log in, close app, reopen → confirm no login prompt; (2) log out, reopen → confirm login screen; (3) add item with brand → brand visible in row; (4) add item without brand → saves OK; (5) edit item brand → brand updates; (6) navigate to an archived list from the active lists tab → read-only banner shown, no add/edit/remove buttons; (7) confirm login and user screens show version number
 
 ---
