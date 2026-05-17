@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Text, XStack, YStack } from 'tamagui';
+import { Text, XStack } from 'tamagui';
 
 import { colors, radius, spacing, typography } from '../design-system/tokens';
 import { stateToneStyles } from '../design-system/variants';

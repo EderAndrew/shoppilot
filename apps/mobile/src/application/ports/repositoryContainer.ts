@@ -1,3 +1,4 @@
+import type { AIRepository } from "./AIRepository";
 import type { AuthRepository } from "./AuthRepository";
 import type { PriceHistoryRepository } from "./PriceHistoryRepository";
 import type { ProductRepository } from "./ProductRepository";
@@ -6,6 +7,7 @@ import type { ShoppingListRepository } from "./ShoppingListRepository";
 import type { UserEventRepository } from "./UserEventRepository";
 
 export type RepositoryContainer = {
+  ai: AIRepository;
   auth: AuthRepository;
   shoppingLists: ShoppingListRepository;
   products: ProductRepository;

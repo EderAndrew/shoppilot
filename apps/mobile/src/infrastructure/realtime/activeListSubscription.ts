@@ -66,6 +66,17 @@ export function subscribeToActiveList({
   }
 
   const channelName = `active-list:${userId}:${listId}`;
+
+  // Supabase v2 reuses channels by name. If a prior cleanup is still in progress
+  // (removeChannel is async), the existing subscribed channel is returned and
+  // calling .on() on it throws. Return early and reuse the live channel instead.
+  const existingChannel = client
+    .getChannels()
+    .find((ch) => ch.topic === `realtime:${channelName}`);
+  if (existingChannel?.joinedOnce) {
+    return { unsubscribe: () => void removeChannel(client, existingChannel) };
+  }
+
   const channel = client
     .channel(channelName)
     .on(

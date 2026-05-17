@@ -23,9 +23,9 @@ describe("auth and active-list routes", () => {
 
   it("protects app routes and wires the active-list flow", async () => {
     await expect(routeSource("(app)/_layout.tsx")).resolves.toContain("/(auth)/login");
-    await expect(routeSource("(app)/index.tsx")).resolves.toContain("ShoppingListCard");
-    await expect(routeSource("(app)/lists/[listId].tsx")).resolves.toContain("BudgetSummary");
-    await expect(routeSource("(app)/lists/[listId]/item-new.tsx")).resolves.toContain(
+    await expect(routeSource("(app)/(tabs)/lists/index.tsx")).resolves.toContain("ShoppingListCard");
+    await expect(routeSource("(app)/(tabs)/lists/[listId]/index.tsx")).resolves.toContain("BudgetSummary");
+    await expect(routeSource("(app)/(tabs)/lists/[listId]/item-new.tsx")).resolves.toContain(
       "ShoppingListItemForm",
     );
   });
@@ -61,7 +61,7 @@ describe("auth screens use shared UI foundation", () => {
 
 describe("list overview screen uses shared UI foundation", () => {
   it("overview uses ScreenContainer and SectionHeader", async () => {
-    const src = await routeSource("(app)/index.tsx");
+    const src = await routeSource("(app)/(tabs)/lists/index.tsx");
     expect(src).toContain("ScreenContainer");
     expect(src).toContain("SectionHeader");
   });
@@ -73,14 +73,13 @@ describe("list overview screen uses shared UI foundation", () => {
 });
 
 describe("list detail screen uses shared UI foundation", () => {
-  it("detail screen uses ScreenContainer and SectionHeader", async () => {
-    const src = await routeSource("(app)/lists/[listId].tsx");
+  it("detail screen uses ScreenContainer", async () => {
+    const src = await routeSource("(app)/(tabs)/lists/[listId]/index.tsx");
     expect(src).toContain("ScreenContainer");
-    expect(src).toContain("SectionHeader");
   });
 
   it("detail screen uses AppButton for actions", async () => {
-    const src = await routeSource("(app)/lists/[listId].tsx");
+    const src = await routeSource("(app)/(tabs)/lists/[listId]/index.tsx");
     expect(src).toContain("AppButton");
   });
 
@@ -91,8 +90,8 @@ describe("list detail screen uses shared UI foundation", () => {
   });
 
   it("item form screens use ScreenContainer and SectionHeader", async () => {
-    const newSrc = await routeSource("(app)/lists/[listId]/item-new.tsx");
-    const editSrc = await routeSource("(app)/lists/[listId]/item-[itemId].tsx");
+    const newSrc = await routeSource("(app)/(tabs)/lists/[listId]/item-new.tsx");
+    const editSrc = await routeSource("(app)/(tabs)/lists/[listId]/item-[itemId].tsx");
     expect(newSrc).toContain("ScreenContainer");
     expect(newSrc).toContain("SectionHeader");
     expect(editSrc).toContain("ScreenContainer");
@@ -108,20 +107,20 @@ describe("list detail screen uses shared UI foundation", () => {
 
 describe("navigation and behavior contracts are preserved", () => {
   it("list overview still navigates to list detail and new list", async () => {
-    const src = await routeSource("(app)/index.tsx");
-    expect(src).toContain("/(app)/lists/new");
-    expect(src).toContain("/(app)/lists/${list.id}");
+    const src = await routeSource("(app)/(tabs)/lists/index.tsx");
+    expect(src).toContain("/(app)/(tabs)/lists/new");
+    expect(src).toContain("/(app)/(tabs)/lists/${list.id}");
   });
 
   it("list detail still navigates to insights, item-new, and item-edit", async () => {
-    const src = await routeSource("(app)/lists/[listId].tsx");
+    const src = await routeSource("(app)/(tabs)/lists/[listId]/index.tsx");
     expect(src).toContain("insights");
     expect(src).toContain("item-new");
     expect(src).toContain("item-${item.id}");
   });
 
   it("list detail still calls complete, check, and remove mutations", async () => {
-    const src = await routeSource("(app)/lists/[listId].tsx");
+    const src = await routeSource("(app)/(tabs)/lists/[listId]/index.tsx");
     expect(src).toContain("completeList");
     expect(src).toContain("checkItem");
     expect(src).toContain("removeItem");

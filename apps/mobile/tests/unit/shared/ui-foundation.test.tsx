@@ -129,9 +129,12 @@ describe("AppListItem", () => {
   });
 
   it("supports completed variant for struck-through bought items", () => {
-    const src = ui("AppListItem.tsx");
-    expect(src).toContain("completed");
-    expect(src).toContain("line-through");
+    const variantsSrc = readFileSync(
+      join(process.cwd(), "src", "shared", "design-system", "variants.ts"),
+      "utf8",
+    );
+    expect(variantsSrc).toContain("completed");
+    expect(variantsSrc).toContain("line-through");
   });
 
   it("enforces 44px minimum touch target", () => {

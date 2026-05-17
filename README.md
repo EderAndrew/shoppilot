@@ -22,6 +22,8 @@ data source later without changing user-facing behavior.
 | User events for auditability and future AI readiness               | Done   |
 | Realtime, hardening, accessibility, and full MVP smoke coverage    | Done   |
 | Mobile UI polish and shared design system foundation               | Done   |
+| Tab bar navigation, archived lists screen, active list filtering   | Done   |
+| AI shopping assistant — Supabase Edge Function + Anthropic Claude  | In progress |
 
 Phase 1 focuses on single-user monthly grocery shopping. Barcode scanning, OCR,
 push notifications, full offline mode, multi-user households, LLM features, and
@@ -31,15 +33,18 @@ a dedicated backend are out of scope for this phase.
 
 - Register, login, logout, and restore authenticated mobile sessions.
 - Create, complete, and archive monthly shopping lists.
+- Browse active lists and archived lists in dedicated tab bar screens.
 - Add, edit, remove, and check priced shopping list items.
 - Track list total, remaining budget, used percentage, and over-budget state.
-- Create and search reusable products with duplicate guidance.
+- Create and search reusable products with inline suggestion and duplicate guidance.
 - Record append-only price history when item prices are created or changed.
 - Compare current item prices against the latest previous product price.
 - Record append-only user events for critical list, item, product, and price
   actions using sanitized metadata.
 - Subscribe to the opened active list and patch the TanStack Query cache when
   list/item changes arrive through Supabase Realtime.
+- Request AI-generated shopping suggestions for an active list using a natural
+  language prompt; review, select, and confirm suggestions to add them as items.
 
 ## Tech Stack
 
@@ -51,6 +56,7 @@ a dedicated backend are out of scope for this phase.
 - React Hook Form and Zod for forms and validation
 - Supabase Auth, Postgres, Realtime-ready schema, and RLS
 - Vitest for unit, integration, and security-oriented tests
+- Anthropic Claude (via Supabase Edge Function) for AI shopping suggestions
 
 ## Repository Layout
 
@@ -58,6 +64,9 @@ a dedicated backend are out of scope for this phase.
 apps/
   mobile/                 Expo mobile app
     src/app/              Expo Router routes
+      (auth)/             Auth stack: login, register
+      (app)/              Protected stack: tabs + product modal
+        (tabs)/           Tab bar: lists, archived, user
     src/domain/           Pure entities, value objects, and domain services
     src/application/      Use cases, repository ports, and query keys
     src/infrastructure/   Supabase clients, repositories, mappers, realtime
@@ -71,9 +80,13 @@ packages/
   shared/                 Shared domain/event types
 supabase/
   migrations/             Phase 1 schema and RLS migrations
+  functions/
+    suggest-items/        Edge Function: AI shopping suggestions via Anthropic
 specs/
   001-monthly-shopping-mvp/
   002-mobile-ui-polish/
+  003-archived-lists-tabbar/
+  004-ai-list-assistant/
 ```
 
 ## Design System
@@ -108,7 +121,7 @@ these shared primitives.
 
 ## Requirements
 
-- Node.js compatible with the Expo SDK in this repo
+- Node.js ≥ 20
 - pnpm `10.33.0`
 - Expo tooling for local mobile development
 - Supabase project for auth and database-backed flows
@@ -131,6 +144,20 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 Do not add a Supabase service role key to the mobile app. The mobile runtime is
 expected to use only anon/public configuration plus the authenticated user
 session.
+
+## AI Assistant Setup
+
+The AI shopping assistant requires an Anthropic API key configured as a Supabase
+Edge Function secret:
+
+```bash
+supabase secrets set ANTHROPIC_API_KEY=<your-key>
+supabase functions deploy suggest-items
+```
+
+The Edge Function validates the caller's JWT, calls Claude, and returns
+structured suggestions. The API key never leaves the server — only the anon key
+is present in the mobile bundle.
 
 ## Supabase Setup
 
@@ -226,12 +253,20 @@ pnpm format
   in `src/shared/design-system/`. Route and feature components should not
   define one-off visual styles that duplicate these patterns.
 
+## Developer Reference
+
+- Claude Code guidance: `CLAUDE.md`
+
 ## Feature Documentation
 
 - Feature spec (Phase 1): `specs/001-monthly-shopping-mvp/spec.md`
 - Implementation plan (Phase 1): `specs/001-monthly-shopping-mvp/plan.md`
 - Feature spec (Phase 2 — UI Polish): `specs/002-mobile-ui-polish/spec.md`
 - Implementation plan (Phase 2): `specs/002-mobile-ui-polish/plan.md`
+- Feature spec (Phase 3 — Tab Bar & Archived Lists): `specs/003-archived-lists-tabbar/spec.md`
+- Implementation plan (Phase 3): `specs/003-archived-lists-tabbar/plan.md`
+- Feature spec (Phase 4 — AI List Assistant): `specs/004-ai-list-assistant/spec.md`
+- Implementation plan (Phase 4): `specs/004-ai-list-assistant/plan.md`
 - Data model: `specs/001-monthly-shopping-mvp/data-model.md`
 - Application contracts:
   `specs/001-monthly-shopping-mvp/contracts/application-contracts.md`

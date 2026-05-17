@@ -128,3 +128,19 @@ export class ArchiveShoppingList {
     return this.shoppingLists.archive({ listId });
   }
 }
+
+export class ListActiveShoppingLists {
+  constructor(private readonly shoppingLists: ShoppingListRepository) {}
+
+  execute(): Promise<ShoppingListRecord[]> {
+    return this.shoppingLists.listActive();
+  }
+}
+
+export class ListArchivedShoppingLists {
+  constructor(private readonly shoppingLists: ShoppingListRepository) {}
+
+  execute(): Promise<ShoppingListRecord[]> {
+    return this.shoppingLists.listArchived();
+  }
+}

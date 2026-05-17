@@ -6,6 +6,8 @@ import {
   CompleteShoppingList,
   CreateShoppingList,
   GetShoppingListDetails,
+  ListActiveShoppingLists,
+  ListArchivedShoppingLists,
   ListShoppingLists,
 } from "../../../src/application/use-cases/shoppingLists";
 
@@ -34,6 +36,10 @@ const item = {
   userId: "user-1",
 };
 
+const activeList = list;
+const completedList = { ...list, completedAt: "2026-05-05T00:00:00.000Z", id: "list-2", status: "completed" as const };
+const archivedList = { ...list, archivedAt: "2026-05-06T00:00:00.000Z", id: "list-3", status: "archived" as const };
+
 function repository(): ShoppingListRepository {
   return {
     archive: vi.fn(async () => ({ ...list, archivedAt: "now", status: "archived" as const })),
@@ -41,6 +47,8 @@ function repository(): ShoppingListRepository {
     create: vi.fn(async () => list),
     getDetails: vi.fn(async () => ({ items: [item], list })),
     list: vi.fn(async () => [list]),
+    listActive: vi.fn(async () => [activeList, completedList]),
+    listArchived: vi.fn(async () => [archivedList]),
   };
 }
 
@@ -72,5 +80,21 @@ describe("shopping list use cases", () => {
     await expect(new ArchiveShoppingList(repo).execute("list-1")).resolves.toMatchObject({
       status: "archived",
     });
+  });
+
+  it("listActive returns only non-archived lists", async () => {
+    const result = await new ListActiveShoppingLists(repository()).execute();
+
+    expect(result).toHaveLength(2);
+    expect(result.every((l) => l.status !== "archived")).toBe(true);
+    expect(result.map((l) => l.status)).toEqual(["active", "completed"]);
+  });
+
+  it("listArchived returns only archived lists", async () => {
+    const result = await new ListArchivedShoppingLists(repository()).execute();
+
+    expect(result).toHaveLength(1);
+    expect(result[0].status).toBe("archived");
+    expect(result[0].id).toBe("list-3");
   });
 });

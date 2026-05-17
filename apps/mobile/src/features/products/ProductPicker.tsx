@@ -1,13 +1,10 @@
 import type { ProductRecord } from "@/application/ports/ProductRepository";
-import { Check } from "@tamagui/lucide-icons-2";
-import { useState } from "react";
-import { YStack } from "tamagui";
+import { useRef, useState } from "react";
+import { Text, YStack } from "tamagui";
 
 import { colors } from "@/shared/design-system/tokens";
 import { AppInput } from "@/shared/ui/AppInput";
 import { AppListItem } from "@/shared/ui/AppListItem";
-import { EmptyState } from "@/shared/ui/EmptyState";
-import { LoadingState } from "@/shared/ui/LoadingState";
 
 import { useProductsQuery } from "./product.queries";
 
@@ -16,9 +13,23 @@ export type ProductPickerProps = {
   onSelect: (product: ProductRecord) => void;
 };
 
-export function ProductPicker({ onSelect, selectedProductId }: ProductPickerProps) {
+export function ProductPicker({ onSelect }: ProductPickerProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const products = useProductsQuery(searchTerm);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const products = useProductsQuery(debouncedSearch);
+
+  function handleChangeText(text: string) {
+    setSearchTerm(text);
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => setDebouncedSearch(text), 300);
+  }
+
+  const hasQuery = searchTerm.trim().length > 0;
+  const firstProduct = products.data?.[0];
+  const showSuggestion = hasQuery && !products.isLoading && Boolean(firstProduct);
+  const showNotFound =
+    hasQuery && !products.isLoading && products.isSuccess && (products.data ?? []).length === 0;
 
   return (
     <YStack gap="$2">
@@ -27,31 +38,24 @@ export function ProductPicker({ onSelect, selectedProductId }: ProductPickerProp
         id="productSearch"
         label="Produto"
         placeholder="Buscar produtos salvos"
-        onChangeText={setSearchTerm}
+        onChangeText={handleChangeText}
         value={searchTerm}
       />
-      {products.isLoading ? (
-        <LoadingState label="Buscando produtos..." />
+      {showSuggestion && firstProduct ? (
+        <AppListItem
+          accessibilityLabel={`Usar produto ${firstProduct.name}`}
+          title={`Usar: ${firstProduct.name}${firstProduct.brand ? `, ${firstProduct.brand}` : ""}${firstProduct.unit ? ` (${firstProduct.unit})` : ""}`}
+          onPress={() => {
+            onSelect(firstProduct);
+            setSearchTerm(firstProduct.name);
+            setDebouncedSearch(firstProduct.name);
+          }}
+        />
       ) : null}
-      {!products.isLoading ? (
-        <YStack>
-          {(products.data ?? []).slice(0, 5).map((product) => (
-            <AppListItem
-              accessibilityLabel={`Selecionar produto ${product.name}`}
-              key={product.id}
-              title={`${product.name}${product.brand ? `, ${product.brand}` : ""}${product.unit ? ` (${product.unit})` : ""}`}
-              trailing={
-                selectedProductId === product.id ? (
-                  <Check color={colors.success} size={18} />
-                ) : null
-              }
-              onPress={() => onSelect(product)}
-            />
-          ))}
-          {products.isSuccess && (products.data ?? []).length === 0 ? (
-            <EmptyState title="Nenhum produto reutilizável encontrado." />
-          ) : null}
-        </YStack>
+      {showNotFound ? (
+        <Text color={colors.textSecondary} fontSize="$3">
+          Nenhum produto reutilizável encontrado
+        </Text>
       ) : null}
     </YStack>
   );

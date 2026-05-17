@@ -60,6 +60,8 @@ function repositories() {
     create: vi.fn(),
     getDetails: vi.fn(async () => ({ items: [item], list })),
     list: vi.fn(),
+    listActive: vi.fn(),
+    listArchived: vi.fn(),
   };
   const shoppingListItems: ShoppingListItemRepository = {
     add: vi.fn(async (input) => ({ ...item, ...input, id: "item-new" })),

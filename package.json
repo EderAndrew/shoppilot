@@ -2,7 +2,7 @@
   "name": "shopPilot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "expo-router/entry",
   "scripts": {
     "start": "pnpm mobile:start",
     "android": "pnpm mobile:android",
@@ -12,20 +12,27 @@
     "mobile:android": "pnpm --filter mobile android",
     "mobile:ios": "pnpm --filter mobile ios",
     "mobile:web": "pnpm --filter mobile web",
+    "mobile:eas": "pnpm -C apps/mobile exec eas",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm --filter mobile lint",
     "test": "pnpm --filter mobile test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "mobile:export:android": "pnpm --filter mobile exec npx expo export --platform android --clear",
+    "mobile:export:ios": "pnpm --filter mobile exec npx expo export --platform ios --clear"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eas-cli": "^18.11.0",
     "prettier": "^3.6.2"
   },
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=20"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "dependencies": {
+    "react-dom": "19.1.0"
+  }
 }

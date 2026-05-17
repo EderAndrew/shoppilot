@@ -5,6 +5,7 @@ import type {
   ProductRecord,
   ProductRepository,
   ProductSearchInput,
+  UpdateProductBrandInput,
 } from "@/application/ports/ProductRepository";
 import { Product } from "@/domain/entities/Product";
 
@@ -63,6 +64,19 @@ export class SupabaseProductRepository implements ProductRepository {
 
     if (error) mapSupabaseError(error);
     return data ? productRowToRecord(data) : null;
+  }
+
+  async updateBrand(input: UpdateProductBrandInput): Promise<ProductRecord> {
+    await requireCurrentUserId(this.authRepository);
+    const { data, error } = await this.client
+      .from("products")
+      .update({ brand: input.brand, updated_at: new Date().toISOString() })
+      .eq("id", input.id)
+      .select()
+      .single();
+
+    if (error) mapSupabaseError(error);
+    return productRowToRecord(data);
   }
 
   async findDuplicateCandidates(input: ProductDuplicateCandidateInput): Promise<ProductRecord[]> {

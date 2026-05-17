@@ -31,7 +31,7 @@ export default function RegisterScreen() {
             {
               onSuccess: (session) => {
                 if (session.user) {
-                  router.replace("/(app)" as Href);
+                  router.replace("/(app)/(tabs)/lists" as Href);
                   return;
                 }
                 setSuccessMessage("Conta criada. Confirme seu email antes de entrar.");

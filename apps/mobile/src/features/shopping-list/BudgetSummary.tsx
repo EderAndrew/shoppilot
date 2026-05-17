@@ -18,14 +18,14 @@ export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary 
         accessibilityRole="summary"
         gap="$3"
       >
-        <XStack justifyContent="space-between">
+        <XStack style={{ justifyContent: "space-between" }}>
           <YStack>
             <Text {...typography.caption} color={colors.textSecondary}>Gasto</Text>
             <Text {...typography.sectionTitle} color={colors.textPrimary}>
               {formatMoney(summary.total)}
             </Text>
           </YStack>
-          <YStack alignItems="flex-end">
+          <YStack style={{ alignItems: "flex-end" }}>
             <Text {...typography.caption} color={colors.textSecondary}>Restante</Text>
             <Text
               {...typography.sectionTitle}
@@ -40,10 +40,10 @@ export function BudgetSummary({ summary }: { summary: ShoppingListBudgetSummary 
           value={progressValue}
         >
           <Progress.Indicator
-            backgroundColor={summary.isOverBudget ? colors.danger : colors.success}
+            style={{ backgroundColor: summary.isOverBudget ? colors.danger : colors.success }}
           />
         </Progress>
-        <XStack justifyContent="space-between">
+        <XStack style={{ justifyContent: "space-between" }}>
           <Text {...typography.caption} color={colors.textSecondary}>
             {formatPercentage(summary.usedPercentage)} usado
           </Text>

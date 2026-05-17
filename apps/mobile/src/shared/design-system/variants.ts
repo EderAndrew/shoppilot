@@ -1,7 +1,7 @@
 import { colors, radius, spacing } from './tokens';
 
 // Button variant style props (compatible with Tamagui Button props + inline style)
-export type ButtonVariant = 'primary' | 'secondary' | 'subtle' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'subtle' | 'danger' | 'ai';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export const buttonVariants: Record<ButtonVariant, {
@@ -34,11 +34,18 @@ export const buttonVariants: Record<ButtonVariant, {
     borderWidth: 0,
     color: colors.textOnDanger,
   },
+  ai: {
+    backgroundColor: '#D4622A',
+    borderColor: '#D4622A',
+    borderWidth: 0,
+    color: '#FFFFFF',
+  },
 } as const;
 
 export const buttonDisabledStyle = {
   backgroundColor: colors.disabledSurface,
   borderColor: 'transparent',
+  borderWidth: 0,
   color: colors.disabled,
   opacity: 0.7,
 } as const;

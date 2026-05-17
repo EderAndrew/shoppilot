@@ -6,7 +6,7 @@ export default function AuthLayout() {
   const { isAuthenticated, isLoading } = useAuthSession();
 
   if (isLoading) return null;
-  if (isAuthenticated) return <Redirect href={"/(app)" as Href} />;
+  if (isAuthenticated) return <Redirect href={"/(app)/(tabs)/lists" as Href} />;
 
   return <Stack screenOptions={{ headerShown: false }} />;
 }

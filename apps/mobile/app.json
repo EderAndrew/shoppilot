@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
-    "scheme": "your-app-scheme",
+    "name": "Shop Pilot",
+    "slug": "shop-pilot",
+    "scheme": "yshop-pilot-scheme",
     "experiments": {
       "typedRoutes": true
     },
@@ -25,13 +25,23 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.drew_ed.shoppilot"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      "expo-sqlite",
+      "expo-font",
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a470820d-b467-4960-8310-103a1284c8f2"
+      }
+    },
+    "owner": "drew_ed"
   }
 }

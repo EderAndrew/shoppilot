@@ -37,6 +37,8 @@ export type ShoppingListDetails = {
 export type ShoppingListRepository = {
   create(input: CreateShoppingListInput): Promise<ShoppingListRecord>;
   list(): Promise<ShoppingListRecord[]>;
+  listActive(): Promise<ShoppingListRecord[]>;
+  listArchived(): Promise<ShoppingListRecord[]>;
   getDetails(listId: string): Promise<ShoppingListDetails | null>;
   complete(input: CompleteShoppingListInput): Promise<ShoppingListRecord>;
   archive(input: ArchiveShoppingListInput): Promise<ShoppingListRecord>;

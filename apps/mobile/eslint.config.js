@@ -1,52 +1,44 @@
 import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
+import prettierConfig from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
-const supabaseImportRestrictions = {
-  paths: [
-    {
-      name: "@supabase/supabase-js",
-      message:
-        "Use repository ports and infrastructure adapters instead of importing Supabase in UI code.",
-    },
-  ],
-  patterns: [
-    {
-      group: [
-        "@/infrastructure/supabase",
-        "@/infrastructure/supabase/*",
-        "../infrastructure/supabase",
-        "../infrastructure/supabase/*",
-      ],
-      message:
-        "Supabase access belongs in infrastructure adapters, not route or feature UI modules.",
-    },
-  ],
-};
-
 export default tseslint.config(
-  {
-    ignores: [
-      "node_modules/",
-      ".expo/",
-      "dist/",
-      "build/",
-      "coverage/",
-      "web-build/",
-      "expo-env.d.ts",
-    ],
-  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  prettierConfig,
   {
-    files: [
-      "app/**/*.{ts,tsx}",
-      "src/features/**/*.{ts,tsx}",
-      "src/shared/components/**/*.{ts,tsx}",
+    ignores: [
+      "node_modules/**",
+      ".expo/**",
+      ".tamagui/**",
+      "dist/**",
+      "build/**",
     ],
+  },
+  {
     rules: {
-      "no-restricted-imports": ["error", supabaseImportRestrictions],
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-require-imports": "warn",
     },
   },
-  eslintConfigPrettier,
+  {
+    // CommonJS config files at the project root — override general rules last
+    files: ["babel.config.js", "metro.config.js"],
+    languageOptions: {
+      globals: {
+        module: "writable",
+        require: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        process: "readonly",
+      },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  }
 );

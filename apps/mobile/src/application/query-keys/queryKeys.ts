@@ -5,6 +5,8 @@ export const queryKeys = {
   },
   shoppingLists: {
     all: () => ["shoppingLists"] as const,
+    active: () => [...(["shoppingLists"] as const), "active"] as const,
+    archived: () => [...(["shoppingLists"] as const), "archived"] as const,
     detail: (listId: string) => ["shoppingList", listId] as const,
     items: (listId: string) => ["shoppingListItems", listId] as const,
   },

@@ -61,6 +61,8 @@ function buildRepositories() {
     create: vi.fn(),
     getDetails: vi.fn(async () => ({ items: [item], list })),
     list: vi.fn(),
+    listActive: vi.fn(),
+    listArchived: vi.fn(),
   };
   const shoppingListItems: ShoppingListItemRepository = {
     add: vi.fn(async (input) => ({ ...item, ...input, id: "item-new" })),
@@ -110,6 +112,7 @@ function buildRepositories() {
     findDuplicateCandidates: vi.fn(async () => []),
     getById: vi.fn(async () => null),
     search: vi.fn(async () => []),
+    updateBrand: vi.fn(async () => ({ barcode: null, brand: null, createdAt: "", id: "product-1", name: "", unit: null, updatedAt: "", userId: "user-1" })),
   };
 
   return { priceHistory, products, shoppingListItems, shoppingLists, userEvents };

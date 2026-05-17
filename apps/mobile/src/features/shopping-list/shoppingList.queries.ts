@@ -5,6 +5,8 @@ import {
   CompleteShoppingList,
   CreateShoppingList,
   GetShoppingListDetails,
+  ListActiveShoppingLists,
+  ListArchivedShoppingLists,
   ListShoppingLists,
 } from "@/application/use-cases/shoppingLists";
 import { queryKeys } from "@/application/query-keys/queryKeys";
@@ -19,12 +21,28 @@ const listUseCases = {
   create: new CreateShoppingList(defaultRepositories.shoppingLists, defaultRepositories.userEvents),
   details: new GetShoppingListDetails(defaultRepositories.shoppingLists),
   list: new ListShoppingLists(defaultRepositories.shoppingLists),
+  listActive: new ListActiveShoppingLists(defaultRepositories.shoppingLists),
+  listArchived: new ListArchivedShoppingLists(defaultRepositories.shoppingLists),
 };
 
 export function useShoppingListsQuery() {
   return useQuery({
     queryFn: () => listUseCases.list.execute(),
     queryKey: queryKeys.shoppingLists.all(),
+  });
+}
+
+export function useActiveShoppingListsQuery() {
+  return useQuery({
+    queryFn: () => listUseCases.listActive.execute(),
+    queryKey: queryKeys.shoppingLists.active(),
+  });
+}
+
+export function useArchivedShoppingListsQuery() {
+  return useQuery({
+    queryFn: () => listUseCases.listArchived.execute(),
+    queryKey: queryKeys.shoppingLists.archived(),
   });
 }
 
