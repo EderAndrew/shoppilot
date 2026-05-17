@@ -4,6 +4,7 @@ export type ShoppingListItemRecord = {
   shoppingListId: string;
   productId: string;
   productName?: string | null;
+  productBrand?: string | null;
   quantity: number;
   unitPrice: number;
   totalPrice: number;

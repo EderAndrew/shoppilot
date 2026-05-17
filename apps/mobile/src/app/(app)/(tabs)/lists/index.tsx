@@ -61,7 +61,7 @@ export default function ShoppingListsScreen() {
                 onPress={() => router.push(`/(app)/(tabs)/lists/${list.id}` as Href)}
               />
               {list.status === "completed" ? (
-                <YStack alignItems="flex-end">
+                <YStack style={{ alignItems: "flex-end" }}>
                   <AppButton
                     accessibilityLabel={`Arquivar lista ${list.name}`}
                     icon={<Archive size={16} />}

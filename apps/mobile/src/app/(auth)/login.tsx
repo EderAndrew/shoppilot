@@ -6,6 +6,7 @@ import { useLoginMutation } from "../../features/auth/auth.queries";
 import { colors, typography } from "../../shared/design-system/tokens";
 import { AppButton } from "../../shared/ui/AppButton";
 import { ScreenContainer } from "../../shared/ui/ScreenContainer";
+import { getAppVersion } from "../../shared/utils/appVersion";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -29,6 +30,13 @@ export default function LoginScreen() {
       <AppButton variant="subtle" onPress={() => router.push("/(auth)/register" as Href)}>
         Criar Conta
       </AppButton>
+      <Text
+        {...typography.caption}
+        style={{ textAlign: "center", marginTop: "auto" }}
+        color={colors.textSecondary}
+      >
+        Versão {getAppVersion()}
+      </Text>
     </ScreenContainer>
   );
 }

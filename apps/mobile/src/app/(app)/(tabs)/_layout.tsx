@@ -11,7 +11,8 @@ export default function TabsLayout() {
           headerShown: false,
           tabBarAccessibilityLabel: "Listas",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <List color={color} size={size} />
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <List color={color as any} size={size} />
           ),
         }}
       />
@@ -22,7 +23,8 @@ export default function TabsLayout() {
           headerShown: false,
           tabBarAccessibilityLabel: "Arquivados",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <Archive color={color} size={size} />
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <Archive color={color as any} size={size} />
           ),
         }}
       />
@@ -33,7 +35,8 @@ export default function TabsLayout() {
           headerShown: false,
           tabBarAccessibilityLabel: "Usuário",
           tabBarIcon: ({ color, size }: { color: string; size: number }) => (
-            <User color={color} size={size} />
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <User color={color as any} size={size} />
           ),
         }}
       />

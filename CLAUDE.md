@@ -20,6 +20,9 @@ pnpm lint
 pnpm test
 pnpm format:check
 
+# Run a single test file
+pnpm --filter mobile test tests/unit/domain/budget.test.ts
+
 # Iterate on mobile tests only
 pnpm --filter mobile test
 pnpm --filter mobile test:watch
@@ -34,7 +37,7 @@ pnpm workspace monorepo. The only active app is `apps/mobile` (Expo + React Nati
 
 ```
 apps/mobile/src/
-  app/              Expo Router screens — auth stack (login, register) + protected stack (tabs + product modal)
+  app/              Expo Router screens — auth stack + protected stack (tabs + product modal)
   domain/           Pure TypeScript — entities, value objects, budget/total/validation rules
   application/      Use cases, repository port interfaces, TanStack Query keys
   infrastructure/   All Supabase code: clients, repository adapters, mappers, Realtime
@@ -46,13 +49,36 @@ apps/mobile/src/
 packages/
   config/           Zod-based environment config shared across workspace
   shared/           Shared domain/event types
-supabase/migrations/ Phase 1 schema (001) and RLS (002) — applied in order
+supabase/
+  migrations/       Phase 1 schema (001) and RLS (002) — applied in order
+  functions/
+    suggest-items/  AI shopping suggestions Edge Function (Deno runtime)
 specs/              Feature specs, plans, data model, and application/Supabase contracts
+```
+
+## Screen Map
+
+```
+app/index.tsx                           → redirects to login or active lists
+(auth)/login                            → LoginForm
+(auth)/register                         → RegisterForm
+(app)/_layout.tsx                       → auth guard; unauthenticated → login
+(app)/(tabs)/lists/                     → active lists index, new list form
+(app)/(tabs)/lists/[listId]/            → list detail with items, budget, AI assistant
+(app)/(tabs)/lists/[listId]/insights    → price comparison view
+(app)/(tabs)/lists/[listId]/item-new    → add item form
+(app)/(tabs)/lists/[listId]/item-[id]   → edit item form
+(app)/(tabs)/archived/                  → archived lists index
+(app)/(tabs)/archived/[listId]/         → read-only archived list detail
+(app)/(tabs)/user/                      → profile / logout
+(app)/products/new                      → product creation modal (from item forms)
 ```
 
 ## Architecture Rules
 
 **Layering** — Routes and components call feature hooks and application use cases. Use cases depend on repository *interfaces* (ports), not on Supabase directly. All Supabase-specific code lives in `src/infrastructure`. Domain code is framework-free.
+
+**Feature hook pattern** — Feature query files (`features/*/\*.queries.ts`) instantiate use cases at module scope using `defaultRepositories`, then wrap them in TanStack Query hooks. Use cases are plain classes; hooks are the only React-aware layer. Example: `shoppingList.queries.ts` creates `listUseCases` at top-level and exports `useShoppingListsQuery`, `useCreateShoppingListMutation`, etc.
 
 **State** — Shopping server state goes in TanStack Query. Zustand is only for transient UI state (selected list, collapsed sections). Never mix these responsibilities.
 
@@ -75,13 +101,32 @@ EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
+## AI Assistant (Edge Function)
+
+`supabase/functions/suggest-items/` runs on Deno. It validates the caller's JWT, calls Claude (`claude-haiku-4-5-20251001`), and returns structured JSON suggestions. The Anthropic API key never leaves the server — only the anon key is in the mobile bundle.
+
+```bash
+supabase secrets set ANTHROPIC_API_KEY=<your-key>
+supabase functions deploy suggest-items
+```
+
 ## Supabase Tables (Phase 1)
 
 `shopping_lists`, `products`, `shopping_list_items`, `price_history`, `user_events` — all scoped by `user_id`. Migrations in `supabase/migrations/` must be applied in order.
 
 ## Testing
 
-Tests live in `apps/mobile/tests/`. Current focus is security-oriented tests (RLS policies, cross-user access denial, ownership validation, append-only invariants, metadata sanitization). Vitest runs in node environment.
+Tests live in `apps/mobile/tests/` across three tiers:
+
+- **unit/** — domain entities/services, use case logic, infrastructure mappers
+- **integration/** — auth + route flows, realtime subscription, multi-step scenarios
+- **security/** — RLS policies, cross-user access denial, ownership invariants, append-only tables, metadata sanitization, env var exposure
+
+Vitest runs in node environment with `@` aliased to `src/`. To run a single file:
+
+```bash
+pnpm --filter mobile test tests/security/rls-policies.test.ts
+```
 
 ## Feature Specs
 

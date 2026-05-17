@@ -6,6 +6,7 @@ import { Text, XStack, YStack } from "tamagui";
 import { AsyncState } from "../../../../../shared/feedback/AsyncState";
 import { AppButton } from "../../../../../shared/ui/AppButton";
 import { ScreenContainer } from "../../../../../shared/ui/ScreenContainer";
+import { StatusState } from "../../../../../shared/ui/StatusState";
 import { colors, typography } from "../../../../../shared/design-system/tokens";
 import { BudgetSummary } from "../../../../../features/shopping-list/BudgetSummary";
 import { OverBudgetAlert } from "../../../../../features/shopping-list/OverBudgetAlert";
@@ -120,21 +121,26 @@ export default function ShoppingListDetailsScreen() {
                     </AppButton>
                   </YStack>
                 ) : null}
-                <YStack flex={1}>
-                  <AppButton
-                    fullWidth
-                    icon={<Plus size={16} />}
-                    size="sm"
-                    onPress={() =>
-                      router.push(`/(app)/(tabs)/lists/${listId}/item-new` as Href)
-                    }
-                  >
-                    Item
-                  </AppButton>
-                </YStack>
+                {details.data.list.status === "active" ? (
+                  <YStack flex={1}>
+                    <AppButton
+                      fullWidth
+                      icon={<Plus size={16} />}
+                      size="sm"
+                      onPress={() =>
+                        router.push(`/(app)/(tabs)/lists/${listId}/item-new` as Href)
+                      }
+                    >
+                      Item
+                    </AppButton>
+                  </YStack>
+                ) : null}
               </XStack>
               <BudgetSummary summary={details.data.budgetSummary} />
               <OverBudgetAlert isOverBudget={details.data.budgetSummary.isOverBudget} />
+              {details.data.list.status === "archived" ? (
+                <StatusState message="Esta lista está arquivada e é somente leitura." tone="error" />
+              ) : null}
               <AsyncState
                 emptyActionLabel="Adicionar item"
                 emptyMessage="Nenhum item na lista ainda."
@@ -147,6 +153,7 @@ export default function ShoppingListDetailsScreen() {
                   {details.data.items.map((item) => (
                     <ShoppingListItemRow
                       item={item}
+                      isReadOnly={details.data.list.status === "archived"}
                       key={item.id}
                       onEdit={() =>
                         router.push(

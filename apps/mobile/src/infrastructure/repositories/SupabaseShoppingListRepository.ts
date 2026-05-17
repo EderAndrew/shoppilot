@@ -93,22 +93,28 @@ export class SupabaseShoppingListRepository implements ShoppingListRepository {
 
     const productIds = Array.from(new Set((items ?? []).map((item) => item.product_id)));
     const productNamesById = new Map<string, string>();
+    const productBrandsById = new Map<string, string | null>();
 
     if (productIds.length > 0) {
       const { data: products, error: productsError } = await this.client
         .from("products")
-        .select("id, name")
+        .select("id, name, brand")
         .in("id", productIds);
 
       if (productsError) mapSupabaseError(productsError);
       for (const product of products ?? []) {
         productNamesById.set(product.id, product.name);
+        productBrandsById.set(product.id, product.brand ?? null);
       }
     }
 
     return {
       items: (items ?? []).map((item) =>
-        shoppingListItemRowToRecord(item, productNamesById.get(item.product_id)),
+        shoppingListItemRowToRecord(
+          item,
+          productNamesById.get(item.product_id),
+          productBrandsById.get(item.product_id),
+        ),
       ),
       list: shoppingListRowToRecord(list),
     };

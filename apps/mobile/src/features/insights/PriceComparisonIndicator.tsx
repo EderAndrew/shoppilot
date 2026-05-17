@@ -39,7 +39,7 @@ export function PriceComparisonIndicator({ insight }: PriceComparisonIndicatorPr
         accessibilityLabel={`Comparativo de preço: ${labels[insight.status]}`}
         gap="$1"
       >
-        <Text {...typography.bodyStrong} color={statusTextColor(insight.status)}>
+        <Text {...typography.bodyStrong} style={{ color: statusTextColor(insight.status) }}>
           {labels[insight.status]}
         </Text>
         {insight.previousPrice !== null ? (

@@ -81,6 +81,7 @@ function buildMvpRepositories() {
     findDuplicateCandidates: vi.fn(async () => []),
     getById: vi.fn(async () => null),
     search: vi.fn(async () => []),
+    updateBrand: vi.fn(async () => ({ barcode: null, brand: null, createdAt: "", id: "product-1", name: "", unit: null, updatedAt: "", userId: "user-1" })),
   };
 
   const shoppingListItems: ShoppingListItemRepository = {

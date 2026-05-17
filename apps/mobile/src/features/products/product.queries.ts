@@ -8,6 +8,7 @@ import {
 } from "@/application/use-cases/products";
 import { queryKeys } from "@/application/query-keys/queryKeys";
 import { defaultRepositories } from "@/infrastructure/repositories/defaultRepositories";
+import type { UpdateProductBrandInput } from "@/application/ports/ProductRepository";
 
 const createProduct = new CreateProduct(
   defaultRepositories.products,
@@ -53,6 +54,18 @@ export function useCreateProductMutation() {
   return useMutation({
     mutationFn: (input: Parameters<typeof createProduct.execute>[0]) =>
       createProduct.execute(input),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.products.all() });
+    },
+  });
+}
+
+export function useUpdateProductBrandMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: UpdateProductBrandInput) =>
+      defaultRepositories.products.updateBrand(input),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.products.all() });
     },

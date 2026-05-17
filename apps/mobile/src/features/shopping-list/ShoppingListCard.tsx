@@ -27,7 +27,7 @@ export function ShoppingListCard({ list, onPress, showArchivedDate = false }: Sh
       variant="actionable"
       onPress={onPress}
     >
-      <XStack alignItems="center" gap={8}>
+      <XStack style={{ alignItems: "center" }} gap={8}>
         <YStack flex={1} gap="$1">
           <Text numberOfLines={2} {...typography.bodyStrong} color={colors.textPrimary}>
             {list.name}

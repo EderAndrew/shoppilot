@@ -57,7 +57,6 @@ export function AppInput({
         accessibilityLabel={accessibilityLabel ?? label}
         autoCapitalize={autoCapitalize}
         disabled={disabled}
-        editable={!disabled}
         id={id}
         keyboardType={keyboardType}
         onBlur={onBlur}
