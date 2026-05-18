@@ -1,5 +1,6 @@
 import { CheckCircle, Plus, Sparkles } from "@tamagui/lucide-icons-2";
 import { type Href, Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Alert } from "react-native";
 import { Text, XStack, YStack } from "tamagui";
 
@@ -12,16 +13,19 @@ import { BudgetSummary } from "../../../../../features/shopping-list/BudgetSumma
 import { OverBudgetAlert } from "../../../../../features/shopping-list/OverBudgetAlert";
 import {
   useCompleteShoppingListMutation,
+  useHydrateListFromRemote,
   useShoppingListDetailsQuery,
 } from "../../../../../features/shopping-list/shoppingList.queries";
 import { useActiveListRealtime } from "../../../../../features/shopping-list/useActiveListRealtime";
 import { ShoppingListItemRow } from "../../../../../features/shopping-list-items/ShoppingListItemRow";
 import {
   useCheckShoppingListItemMutation,
+  usePendingSyncCountQuery,
   useRemoveShoppingListItemMutation,
 } from "../../../../../features/shopping-list-items/item.queries";
 import { AISuggestionSheet } from "../../../../../features/ai-assistant/AISuggestionSheet";
 import { useUiStore } from "../../../../../shared/state/uiStore";
+import { useAuthSession } from "../../../../../features/auth/useAuthSession";
 
 const statusLabels = {
   active: "ativa",
@@ -37,7 +41,14 @@ export default function ShoppingListDetailsScreen() {
   const removeItem = useRemoveShoppingListItemMutation(listId);
   const checkItem = useCheckShoppingListItemMutation(listId);
   const { setAIAssistantOpen } = useUiStore();
+  const { hydrateList } = useHydrateListFromRemote(listId);
+  const { user } = useAuthSession();
+  const pendingSync = usePendingSyncCountQuery(user?.id ?? "");
   useActiveListRealtime(listId);
+
+  useEffect(() => {
+    hydrateList();
+  }, [listId]); // hydrateList (TanStack Query mutate) is stable across renders
 
   const confirmCompleteList = () => {
     Alert.alert("Lista completa?", "Isso remove a lista da lista de compras ativas.", [
@@ -138,6 +149,16 @@ export default function ShoppingListDetailsScreen() {
               </XStack>
               <BudgetSummary summary={details.data.budgetSummary} />
               <OverBudgetAlert isOverBudget={details.data.budgetSummary.isOverBudget} />
+              {(pendingSync.data ?? 0) > 0 ? (
+                <Text
+                  style={{
+                    fontSize: typography.caption.fontSize,
+                    color: colors.textSecondary,
+                  }}
+                >
+                  {pendingSync.data} {pendingSync.data === 1 ? "item pendente" : "itens pendentes"} de sincronização
+                </Text>
+              ) : null}
               {details.data.list.status === "archived" ? (
                 <StatusState message="Esta lista está arquivada e é somente leitura." tone="error" />
               ) : null}
@@ -157,7 +178,7 @@ export default function ShoppingListDetailsScreen() {
                       key={item.id}
                       onEdit={() =>
                         router.push(
-                          `/(app)/(tabs)/lists/${listId}/${item.id}` as Href,
+                          `/(app)/(tabs)/lists/${listId}/item-${item.id}` as Href,
                         )
                       }
                       onRemove={() =>

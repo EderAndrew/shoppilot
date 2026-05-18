@@ -1,21 +1,18 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
-  AddShoppingListItem,
   CheckShoppingListItem,
   RemoveShoppingListItem,
-  UpdateShoppingListItem,
+  type UpdateShoppingListItemUseCaseInput,
 } from "@/application/use-cases/shoppingListItems";
+import type { AddShoppingListItemInput } from "@/application/ports/ShoppingListItemRepository";
 import { queryKeys } from "@/application/query-keys/queryKeys";
 import { defaultRepositories } from "@/infrastructure/repositories/defaultRepositories";
+import { createAppError } from "@/shared/errors/appError";
+import { getDatabaseInstance } from "@/lib/db/database";
+import { SQLiteShoppingListItemRepository } from "@/infrastructure/local/SQLiteShoppingListItemRepository";
 
 const itemUseCases = {
-  add: new AddShoppingListItem(
-    defaultRepositories.shoppingListItems,
-    defaultRepositories.shoppingLists,
-    defaultRepositories.priceHistory,
-    defaultRepositories.userEvents,
-  ),
   check: new CheckShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
@@ -24,12 +21,6 @@ const itemUseCases = {
   remove: new RemoveShoppingListItem(
     defaultRepositories.shoppingListItems,
     defaultRepositories.shoppingLists,
-    defaultRepositories.userEvents,
-  ),
-  update: new UpdateShoppingListItem(
-    defaultRepositories.shoppingListItems,
-    defaultRepositories.shoppingLists,
-    defaultRepositories.priceHistory,
     defaultRepositories.userEvents,
   ),
 };
@@ -48,8 +39,20 @@ export function useAddShoppingListItemMutation(listId: string) {
   const invalidateList = useInvalidateList(listId);
 
   return useMutation({
-    mutationFn: (input: Parameters<typeof itemUseCases.add.execute>[0]) =>
-      itemUseCases.add.execute(input),
+    mutationFn: async (input: Omit<AddShoppingListItemInput, "totalPrice">) => {
+      const details = await defaultRepositories.shoppingLists.getDetails(input.shoppingListId);
+      if (!details) {
+        throw createAppError({ category: "not_found", message: "Não encontramos essa lista." });
+      }
+      if (details.list.status === "archived") {
+        throw createAppError({
+          category: "forbidden",
+          message: "Esta lista está arquivada e não pode ser modificada.",
+        });
+      }
+      const totalPrice = Math.round(input.quantity * input.unitPrice * 100) / 100;
+      return defaultRepositories.shoppingListItems.add({ ...input, totalPrice });
+    },
     onSuccess: invalidateList,
   });
 }
@@ -58,8 +61,31 @@ export function useUpdateShoppingListItemMutation(listId: string) {
   const invalidateList = useInvalidateList(listId);
 
   return useMutation({
-    mutationFn: (input: Parameters<typeof itemUseCases.update.execute>[0]) =>
-      itemUseCases.update.execute(input),
+    mutationFn: async (input: UpdateShoppingListItemUseCaseInput) => {
+      const details = await defaultRepositories.shoppingLists.getDetails(input.shoppingListId);
+      if (!details) {
+        throw createAppError({ category: "not_found", message: "Não encontramos essa lista." });
+      }
+      if (details.list.status === "archived") {
+        throw createAppError({
+          category: "forbidden",
+          message: "Esta lista está arquivada e não pode ser modificada.",
+        });
+      }
+      const currentItem = details.items.find((item) => item.id === input.itemId);
+      if (!currentItem) {
+        throw createAppError({ category: "not_found", message: "Não encontramos esse registro." });
+      }
+      const quantity = input.quantity ?? currentItem.quantity;
+      const unitPrice = input.unitPrice ?? currentItem.unitPrice;
+      const totalPrice = Math.round(quantity * unitPrice * 100) / 100;
+      return defaultRepositories.shoppingListItems.update({
+        ...input,
+        quantity,
+        unitPrice,
+        totalPrice,
+      });
+    },
     onSuccess: invalidateList,
   });
 }
@@ -71,6 +97,17 @@ export function useRemoveShoppingListItemMutation(listId: string) {
     mutationFn: (input: Parameters<typeof itemUseCases.remove.execute>[0]) =>
       itemUseCases.remove.execute(input),
     onSuccess: invalidateList,
+  });
+}
+
+export function usePendingSyncCountQuery(userId: string) {
+  return useQuery({
+    queryKey: queryKeys.shoppingLists.pendingCount(userId),
+    queryFn: () => {
+      const repo = new SQLiteShoppingListItemRepository(getDatabaseInstance());
+      return repo.countPendingSync(userId);
+    },
+    enabled: !!userId,
   });
 }
 

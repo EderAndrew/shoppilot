@@ -9,6 +9,7 @@ export const queryKeys = {
     archived: () => [...(["shoppingLists"] as const), "archived"] as const,
     detail: (listId: string) => ["shoppingList", listId] as const,
     items: (listId: string) => ["shoppingListItems", listId] as const,
+    pendingCount: (userId: string) => ["shoppingListItems", "pendingCount", userId] as const,
   },
   products: {
     all: () => ["products"] as const,

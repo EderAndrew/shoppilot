@@ -60,6 +60,9 @@ importers:
       expo-linking:
         specifier: ~8.0.12
         version: 8.0.12(expo@54.0.34)(react-native@0.81.5(@babel/core@7.29.0)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      expo-network:
+        specifier: ^55.0.14
+        version: 55.0.14(expo@54.0.34)(react@19.1.0)
       expo-router:
         specifier: ~6.0.23
         version: 6.0.23(7a6c3dd3fed6559fb6ed314495a481b7)
@@ -99,6 +102,9 @@ importers:
       react-native-web:
         specifier: ^0.21.2
         version: 0.21.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      sqlite:
+        specifier: ^5.1.1
+        version: 5.1.1
       tamagui:
         specifier: 2.0.0-rc.42
         version: 2.0.0-rc.42(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.0)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -3501,6 +3507,12 @@ packages:
       react: '*'
       react-native: '*'
 
+  expo-network@55.0.14:
+    resolution: {integrity: sha512-Sy544zTPjVh+tbOLUOU8fBX87oRSrNQqUZY6TLO0w0WF/QTNb7yxlwRh6v6wfKKRg9xpZypTIIEtdG/s6q8ZQA==}
+    peerDependencies:
+      expo: '*'
+      react: '*'
+
   expo-router@6.0.23:
     resolution: {integrity: sha512-qCxVAiCrCyu0npky6azEZ6dJDMt77OmCzEbpF6RbUTlfkaCA417LvY14SBkk0xyGruSxy/7pvJOI6tuThaUVCA==}
     peerDependencies:
@@ -5350,6 +5362,9 @@ packages:
 
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
+
+  sqlite@5.1.1:
+    resolution: {integrity: sha512-oBkezXa2hnkfuJwUo44Hl9hS3er+YFtueifoajrgidvqsJRQFpc5fKoAkAor1O5ZnLoa28GBScfHXs8j0K358Q==}
 
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
@@ -10680,6 +10695,11 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.29.0)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.1.17)(react@19.1.0)
 
+  expo-network@55.0.14(expo@54.0.34)(react@19.1.0):
+    dependencies:
+      expo: 54.0.34(@babel/core@7.29.0)(@expo/metro-runtime@6.1.2)(expo-router@6.0.23)(graphql@16.8.1)(react-native@0.81.5(@babel/core@7.29.0)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
+      react: 19.1.0
+
   expo-router@6.0.23(7a6c3dd3fed6559fb6ed314495a481b7):
     dependencies:
       '@expo/metro-runtime': 6.1.2(expo@54.0.34)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.0)(@react-native/metro-config@0.85.3(@babel/core@7.29.0))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -12891,6 +12911,8 @@ snapshots:
   split-on-first@1.1.0: {}
 
   sprintf-js@1.0.3: {}
+
+  sqlite@5.1.1: {}
 
   stack-utils@2.0.6:
     dependencies:

@@ -12,6 +12,7 @@ export type ShoppingListRecord = {
   updatedAt: string;
   completedAt: string | null;
   archivedAt: string | null;
+  syncStatus?: import("@/infrastructure/local/sync.types").SyncStatus;
 };
 
 export type CreateShoppingListInput = {
@@ -42,4 +43,5 @@ export type ShoppingListRepository = {
   getDetails(listId: string): Promise<ShoppingListDetails | null>;
   complete(input: CompleteShoppingListInput): Promise<ShoppingListRecord>;
   archive(input: ArchiveShoppingListInput): Promise<ShoppingListRecord>;
+  hydrateFromRemote?(listId: string): Promise<void>;
 };

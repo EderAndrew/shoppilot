@@ -8,6 +8,9 @@ import type {
 import { LoginUser, LogoutUser, RegisterUser, RestoreSession } from "@/application/use-cases/auth";
 import { queryKeys } from "@/application/query-keys/queryKeys";
 import { defaultRepositories } from "@/infrastructure/repositories/defaultRepositories";
+import { getDatabaseInstance } from "@/lib/db/database";
+import { SQLiteShoppingListItemRepository } from "@/infrastructure/local/SQLiteShoppingListItemRepository";
+import { SQLiteShoppingListRepository } from "@/infrastructure/local/SQLiteShoppingListRepository";
 
 import { useAuthSession } from "./useAuthSession";
 
@@ -54,11 +57,16 @@ export function useRegisterMutation() {
 
 export function useLogoutMutation() {
   const queryClient = useQueryClient();
-  const { clearSession } = useAuthSession();
+  const { clearSession, user } = useAuthSession();
 
   return useMutation({
     mutationFn: () => new LogoutUser(defaultRepositories.auth).execute(),
     onSuccess: async () => {
+      if (user?.id) {
+        const db = getDatabaseInstance();
+        await new SQLiteShoppingListItemRepository(db).deleteAllForUser(user.id);
+        await new SQLiteShoppingListRepository(db).deleteAllForUser(user.id);
+      }
       clearSession();
       await queryClient.clear();
     },
