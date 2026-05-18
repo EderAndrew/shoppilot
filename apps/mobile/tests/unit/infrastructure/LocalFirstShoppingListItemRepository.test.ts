@@ -104,6 +104,7 @@ describe('LocalFirstShoppingListItemRepository', () => {
     it('item sem remote_id: hard delete sem chamar Supabase', async () => {
       const item = await repo.add({
         shoppingListId: 'list-1',
+        productId: 'prod-1',
         productName: 'Arroz',
         quantity: 1,
         unitPrice: 5,
@@ -120,6 +121,7 @@ describe('LocalFirstShoppingListItemRepository', () => {
     it('item com remote_id: soft delete + pending_delete, sem chamar Supabase (offline)', async () => {
       const item = await repo.add({
         shoppingListId: 'list-1',
+        productId: 'prod-2',
         productName: 'Feijão',
         quantity: 1,
         unitPrice: 8,

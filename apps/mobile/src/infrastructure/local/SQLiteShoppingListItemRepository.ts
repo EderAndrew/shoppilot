@@ -1,5 +1,8 @@
 import type { SQLiteDatabase } from 'expo-sqlite'
 
+import { createAppError } from '@/shared/errors/appError'
+import { logger } from '@/shared/logging/logger'
+
 import { itemRowToRecord, type ItemRow, type LocalItemRecord } from './localDbMapper'
 import type { SyncStatus } from './sync.types'
 
@@ -70,70 +73,95 @@ export class SQLiteShoppingListItemRepository {
   }
 
   async create(input: CreateItemInput): Promise<LocalItemRecord> {
-    const now = new Date().toISOString()
-    const id = globalThis.crypto.randomUUID()
-    await this.db.runAsync(
-      `INSERT INTO local_shopping_list_items
-        (id, list_id, remote_list_id, user_id, product_id, product_name, brand,
-         quantity, unit_price, total_price, bought, sync_status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending_create', ?, ?)`,
-      [id, input.listId, input.remoteListId ?? null, input.userId,
-        input.productId ?? null, input.productName, input.brand ?? null,
-        input.quantity, input.unitPrice, input.totalPrice, now, now],
-    )
-    return (await this.findById(id))!
+    try {
+      const now = new Date().toISOString()
+      const id = globalThis.crypto.randomUUID()
+      await this.db.runAsync(
+        `INSERT INTO local_shopping_list_items
+          (id, list_id, remote_list_id, user_id, product_id, product_name, brand,
+           quantity, unit_price, total_price, bought, sync_status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'pending_create', ?, ?)`,
+        [id, input.listId, input.remoteListId ?? null, input.userId,
+          input.productId ?? null, input.productName, input.brand ?? null,
+          input.quantity, input.unitPrice, input.totalPrice, now, now],
+      )
+      return (await this.findById(id))!
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.create failed', { listId: input.listId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 
   async update(localId: string, fields: UpdateItemFields): Promise<LocalItemRecord> {
-    const now = new Date().toISOString()
-    const setParts: string[] = ['updated_at = ?']
-    const params: (string | number | null)[] = [now]
+    try {
+      const now = new Date().toISOString()
+      const setParts: string[] = ['updated_at = ?']
+      const params: (string | number | null)[] = [now]
 
-    if (fields.productName !== undefined) { setParts.push('product_name = ?'); params.push(fields.productName) }
-    if (fields.brand !== undefined) { setParts.push('brand = ?'); params.push(fields.brand) }
-    if (fields.quantity !== undefined) { setParts.push('quantity = ?'); params.push(fields.quantity) }
-    if (fields.unitPrice !== undefined) { setParts.push('unit_price = ?'); params.push(fields.unitPrice) }
-    if (fields.totalPrice !== undefined) { setParts.push('total_price = ?'); params.push(fields.totalPrice) }
-    if (fields.bought !== undefined) { setParts.push('bought = ?'); params.push(fields.bought ? 1 : 0) }
-    if (fields.syncStatus !== undefined) { setParts.push('sync_status = ?'); params.push(fields.syncStatus) }
+      if (fields.productName !== undefined) { setParts.push('product_name = ?'); params.push(fields.productName) }
+      if (fields.brand !== undefined) { setParts.push('brand = ?'); params.push(fields.brand) }
+      if (fields.quantity !== undefined) { setParts.push('quantity = ?'); params.push(fields.quantity) }
+      if (fields.unitPrice !== undefined) { setParts.push('unit_price = ?'); params.push(fields.unitPrice) }
+      if (fields.totalPrice !== undefined) { setParts.push('total_price = ?'); params.push(fields.totalPrice) }
+      if (fields.bought !== undefined) { setParts.push('bought = ?'); params.push(fields.bought ? 1 : 0) }
+      if (fields.syncStatus !== undefined) { setParts.push('sync_status = ?'); params.push(fields.syncStatus) }
 
-    params.push(localId)
-    await this.db.runAsync(
-      `UPDATE local_shopping_list_items SET ${setParts.join(', ')} WHERE id = ?`,
-      params,
-    )
-    return (await this.findById(localId))!
+      params.push(localId)
+      await this.db.runAsync(
+        `UPDATE local_shopping_list_items SET ${setParts.join(', ')} WHERE id = ?`,
+        params,
+      )
+      return (await this.findById(localId))!
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.update failed', { localId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 
   async softDelete(localId: string): Promise<void> {
-    const now = new Date().toISOString()
-    await this.db.runAsync(
-      `UPDATE local_shopping_list_items
-       SET deleted_at = ?, sync_status = 'pending_delete', updated_at = ?
-       WHERE id = ?`,
-      [now, now, localId],
-    )
+    try {
+      const now = new Date().toISOString()
+      await this.db.runAsync(
+        `UPDATE local_shopping_list_items
+         SET deleted_at = ?, sync_status = 'pending_delete', updated_at = ?
+         WHERE id = ?`,
+        [now, now, localId],
+      )
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.softDelete failed', { localId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 
   async hardDelete(localId: string): Promise<void> {
-    await this.db.runAsync(
-      'DELETE FROM local_shopping_list_items WHERE id = ?',
-      [localId],
-    )
+    try {
+      await this.db.runAsync(
+        'DELETE FROM local_shopping_list_items WHERE id = ?',
+        [localId],
+      )
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.hardDelete failed', { localId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 
   async updateSyncStatus(localId: string, status: SyncStatus, remoteId?: string): Promise<void> {
-    const now = new Date().toISOString()
-    if (remoteId !== undefined) {
-      await this.db.runAsync(
-        'UPDATE local_shopping_list_items SET sync_status = ?, remote_id = ?, updated_at = ? WHERE id = ?',
-        [status, remoteId, now, localId],
-      )
-    } else {
-      await this.db.runAsync(
-        'UPDATE local_shopping_list_items SET sync_status = ?, updated_at = ? WHERE id = ?',
-        [status, now, localId],
-      )
+    try {
+      const now = new Date().toISOString()
+      if (remoteId !== undefined) {
+        await this.db.runAsync(
+          'UPDATE local_shopping_list_items SET sync_status = ?, remote_id = ?, updated_at = ? WHERE id = ?',
+          [status, remoteId, now, localId],
+        )
+      } else {
+        await this.db.runAsync(
+          'UPDATE local_shopping_list_items SET sync_status = ?, updated_at = ? WHERE id = ?',
+          [status, now, localId],
+        )
+      }
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.updateSyncStatus failed', { localId, status })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
     }
   }
 
@@ -150,44 +178,54 @@ export class SQLiteShoppingListItemRepository {
     record: UpsertFromRemoteItemInput,
     localListId: string,
   ): Promise<LocalItemRecord> {
-    const existing = await this.db.getFirstAsync<ItemRow>(
-      'SELECT * FROM local_shopping_list_items WHERE remote_id = ?',
-      [record.remoteId],
-    )
-
-    if (existing) {
-      if (existing.deleted_at !== null) return itemRowToRecord(existing)
-      if (existing.sync_status !== 'synced') return itemRowToRecord(existing)
-      await this.db.runAsync(
-        `UPDATE local_shopping_list_items
-           SET list_id = ?, product_name = ?, brand = ?, quantity = ?, unit_price = ?, total_price = ?,
-               bought = ?, updated_at = ?
-         WHERE id = ?`,
-        [localListId, record.productName, record.brand ?? null, record.quantity,
-          record.unitPrice, record.totalPrice, record.bought ? 1 : 0,
-          record.updatedAt, existing.id],
+    try {
+      const existing = await this.db.getFirstAsync<ItemRow>(
+        'SELECT * FROM local_shopping_list_items WHERE remote_id = ?',
+        [record.remoteId],
       )
-      return (await this.findById(existing.id))!
-    }
 
-    const id = globalThis.crypto.randomUUID()
-    await this.db.runAsync(
-      `INSERT INTO local_shopping_list_items
-        (id, remote_id, list_id, remote_list_id, user_id, product_id, product_name, brand,
-         quantity, unit_price, total_price, bought, sync_status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'synced', ?, ?)`,
-      [id, record.remoteId, localListId, record.remoteListId, record.userId,
-        record.productId ?? null, record.productName, record.brand ?? null,
-        record.quantity, record.unitPrice, record.totalPrice,
-        record.bought ? 1 : 0, record.createdAt, record.updatedAt],
-    )
-    return (await this.findById(id))!
+      if (existing) {
+        if (existing.deleted_at !== null) return itemRowToRecord(existing)
+        if (existing.sync_status !== 'synced') return itemRowToRecord(existing)
+        await this.db.runAsync(
+          `UPDATE local_shopping_list_items
+             SET list_id = ?, product_name = ?, brand = ?, quantity = ?, unit_price = ?, total_price = ?,
+                 bought = ?, updated_at = ?
+           WHERE id = ?`,
+          [localListId, record.productName, record.brand ?? null, record.quantity,
+            record.unitPrice, record.totalPrice, record.bought ? 1 : 0,
+            record.updatedAt, existing.id],
+        )
+        return (await this.findById(existing.id))!
+      }
+
+      const id = globalThis.crypto.randomUUID()
+      await this.db.runAsync(
+        `INSERT INTO local_shopping_list_items
+          (id, remote_id, list_id, remote_list_id, user_id, product_id, product_name, brand,
+           quantity, unit_price, total_price, bought, sync_status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'synced', ?, ?)`,
+        [id, record.remoteId, localListId, record.remoteListId, record.userId,
+          record.productId ?? null, record.productName, record.brand ?? null,
+          record.quantity, record.unitPrice, record.totalPrice,
+          record.bought ? 1 : 0, record.createdAt, record.updatedAt],
+      )
+      return (await this.findById(id))!
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.upsertFromRemote failed', { remoteId: record.remoteId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 
   async deleteAllForUser(userId: string): Promise<void> {
-    await this.db.runAsync(
-      'DELETE FROM local_shopping_list_items WHERE user_id = ?',
-      [userId],
-    )
+    try {
+      await this.db.runAsync(
+        'DELETE FROM local_shopping_list_items WHERE user_id = ?',
+        [userId],
+      )
+    } catch (err) {
+      logger.error('SQLiteShoppingListItemRepository.deleteAllForUser failed', { userId })
+      throw createAppError({ category: 'unexpected', message: 'Algo deu errado. Tente novamente.', cause: err })
+    }
   }
 }

@@ -176,7 +176,7 @@ export class LocalFirstShoppingListItemRepository implements ShoppingListItemRep
       void this.queryClient.invalidateQueries({
         queryKey: queryKeys.shoppingLists.detail(input.shoppingListId),
       })
-    } catch (err) {
+    } catch {
       await this.sqliteRepo.updateSyncStatus(localRecord.id, 'error')
       logger.warn('syncCreate: falha ao sincronizar item', { listId: input.shoppingListId })
     }

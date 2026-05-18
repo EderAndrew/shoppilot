@@ -435,3 +435,28 @@ async upsertFromRemote(remoteItem: ShoppingListItemRecord): Promise<void> {
   }
 }
 ```
+
+---
+
+## Decisões Técnicas da Fase 2 (registradas em T052)
+
+### `globalThis.crypto.randomUUID()`
+
+Usado para gerar UUIDs locais sem dependências externas. Disponível no Hermes runtime (React Native 0.71+) e no ambiente de teste Vitest (Node.js). Fallback: `expo-crypto.randomUUID()` se necessário. IDs locais têm o mesmo formato UUID v4 que os IDs do Supabase para evitar colisões ao comparar strings.
+
+### Padrão fire-and-forget para sync remoto
+
+Todos os métodos `syncCreate`, `syncUpdate`, `syncDelete`, `syncArchive`, `syncComplete` são invocados com `void` (sem await). Isso garante que a mutation local retorna em < 300ms independentemente da latência de rede. O try/catch interno captura falhas silenciosamente — o item permanece com `sync_status = 'error'` e o log `logger.warn` é registrado. A UI nunca recebe exceções de rede dos métodos de sync.
+
+### Por que `price_history` e `user_events` ficam apenas no Supabase
+
+Essas tabelas são append-only e de auditoria — não fazem parte do fluxo de escrita interativo. O custo de sync bidirecional seria alto e os ganhos de UX, baixos (usuário não precisa ver histórico de preços offline imediatamente). A Fase 3 pode adicionar cache local dessas tabelas se necessário.
+
+### Itens para a Fase 3
+
+- **Retry automático robusto**: fila de sync persistida (ex.: tabela `_sync_queue`) com retry exponencial para itens em `sync_status = 'error'`
+- **Reconciliação bidirecional**: detectar conflitos quando remote e local foram modificados independentemente; estratégia "last-write-wins" ou merge por campo
+- **Resolução de conflitos**: timestamp comparison + user notification para conflitos detectados
+- **Limpeza de soft-deletes antigos**: cron job ou trigger local para purgar `deleted_at IS NOT NULL` após N dias
+- **Sync de `price_history` e `user_events`**: cache local para insights offline
+- **Indicador de "sincronizando agora"**: spinner durante sync ativo (não apenas contador de pendentes)

@@ -20,10 +20,12 @@ import { useActiveListRealtime } from "../../../../../features/shopping-list/use
 import { ShoppingListItemRow } from "../../../../../features/shopping-list-items/ShoppingListItemRow";
 import {
   useCheckShoppingListItemMutation,
+  usePendingSyncCountQuery,
   useRemoveShoppingListItemMutation,
 } from "../../../../../features/shopping-list-items/item.queries";
 import { AISuggestionSheet } from "../../../../../features/ai-assistant/AISuggestionSheet";
 import { useUiStore } from "../../../../../shared/state/uiStore";
+import { useAuthSession } from "../../../../../features/auth/useAuthSession";
 
 const statusLabels = {
   active: "ativa",
@@ -40,6 +42,8 @@ export default function ShoppingListDetailsScreen() {
   const checkItem = useCheckShoppingListItemMutation(listId);
   const { setAIAssistantOpen } = useUiStore();
   const { hydrateList } = useHydrateListFromRemote(listId);
+  const { user } = useAuthSession();
+  const pendingSync = usePendingSyncCountQuery(user?.id ?? "");
   useActiveListRealtime(listId);
 
   useEffect(() => {
@@ -145,6 +149,16 @@ export default function ShoppingListDetailsScreen() {
               </XStack>
               <BudgetSummary summary={details.data.budgetSummary} />
               <OverBudgetAlert isOverBudget={details.data.budgetSummary.isOverBudget} />
+              {(pendingSync.data ?? 0) > 0 ? (
+                <Text
+                  style={{
+                    fontSize: typography.caption.fontSize,
+                    color: colors.textSecondary,
+                  }}
+                >
+                  {pendingSync.data} {pendingSync.data === 1 ? "item pendente" : "itens pendentes"} de sincronização
+                </Text>
+              ) : null}
               {details.data.list.status === "archived" ? (
                 <StatusState message="Esta lista está arquivada e é somente leitura." tone="error" />
               ) : null}
@@ -164,7 +178,7 @@ export default function ShoppingListDetailsScreen() {
                       key={item.id}
                       onEdit={() =>
                         router.push(
-                          `/(app)/(tabs)/lists/${listId}/${item.id}` as Href,
+                          `/(app)/(tabs)/lists/${listId}/item-${item.id}` as Href,
                         )
                       }
                       onRemove={() =>

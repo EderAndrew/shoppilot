@@ -40,3 +40,6 @@ export type { StatusStateProps, StatusTone } from './StatusState';
 
 export { InvalidFieldText } from './InvalidFieldText';
 export type { InvalidFieldTextProps } from './InvalidFieldText';
+
+export { SyncStatusBadge } from './SyncStatusBadge';
+export type { SyncStatusBadgeProps } from './SyncStatusBadge';

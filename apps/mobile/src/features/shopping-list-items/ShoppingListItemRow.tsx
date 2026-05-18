@@ -6,6 +6,7 @@ import { formatMoney } from "@/shared/formatters/money";
 import { colors } from "@/shared/design-system/tokens";
 import { AppButton } from "@/shared/ui/AppButton";
 import { AppListItem } from "@/shared/ui/AppListItem";
+import { SyncStatusBadge } from "@/shared/ui/SyncStatusBadge";
 
 export type ShoppingListItemRowProps = {
   item: ShoppingListItemRecord;
@@ -47,6 +48,7 @@ export function ShoppingListItemRow({
         variant={item.bought ? "completed" : "default"}
         onPress={isReadOnly ? undefined : onEdit}
       />
+      <SyncStatusBadge syncStatus={item.syncStatus} />
       {!isReadOnly ? (
         <AppButton
           accessibilityLabel={`Remover ${item.productName ?? "item da lista"}`}

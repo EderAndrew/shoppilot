@@ -160,11 +160,11 @@ apps/mobile/tests/security/              # Testes de isolamento por user_id
 
 ### Implementation para User Story 5
 
-- [ ] T038 [US5] Adicionar `usePendingSyncCountQuery(userId: string)` em `apps/mobile/src/features/shopping-list-items/item.queries.ts`: `queryFn` chama `SQLiteShoppingListItemRepository.countPendingSync(userId)`, `queryKey: queryKeys.shoppingLists.pendingCount(userId)` (adicionar nova key em `queryKeys.ts`)
-- [ ] T039 [US5] Criar `apps/mobile/src/shared/ui/SyncStatusBadge.tsx` — componente Tamagui discreto que exibe texto "Pendente" (XS Text, cor neutra) quando `syncStatus !== 'synced'` e `syncStatus !== undefined`; nenhum output quando `synced`
-- [ ] T040 [US5] Modificar `apps/mobile/src/features/shopping-list-items/ShoppingListItemRow.tsx` para exibir `<SyncStatusBadge syncStatus={item.syncStatus} />` discretamente ao lado do nome ou preço do item
-- [ ] T041 [US5] Adicionar indicador global na tela de detalhe da lista (onde `useShoppingListDetailsQuery` é consumido): se `pendingCount > 0`, exibir texto discreto "X itens pendentes de sincronização" usando `usePendingSyncCountQuery`
-- [ ] T042 [US5] Adicionar `clearLocalDataOnLogout(userId)` em `apps/mobile/src/features/auth/auth.queries.ts` — `useLogoutMutation.onSuccess`: chama `SQLiteShoppingListRepository.deleteAllForUser(userId)` e `SQLiteShoppingListItemRepository.deleteAllForUser(userId)` antes de navegar para login
+- [x] T038 [US5] Adicionar `usePendingSyncCountQuery(userId: string)` em `apps/mobile/src/features/shopping-list-items/item.queries.ts`: `queryFn` chama `SQLiteShoppingListItemRepository.countPendingSync(userId)`, `queryKey: queryKeys.shoppingLists.pendingCount(userId)` (adicionar nova key em `queryKeys.ts`)
+- [x] T039 [US5] Criar `apps/mobile/src/shared/ui/SyncStatusBadge.tsx` — componente Tamagui discreto que exibe texto "Pendente" (XS Text, cor neutra) quando `syncStatus !== 'synced'` e `syncStatus !== undefined`; nenhum output quando `synced`
+- [x] T040 [US5] Modificar `apps/mobile/src/features/shopping-list-items/ShoppingListItemRow.tsx` para exibir `<SyncStatusBadge syncStatus={item.syncStatus} />` discretamente ao lado do nome ou preço do item
+- [x] T041 [US5] Adicionar indicador global na tela de detalhe da lista (onde `useShoppingListDetailsQuery` é consumido): se `pendingCount > 0`, exibir texto discreto "X itens pendentes de sincronização" usando `usePendingSyncCountQuery`
+- [x] T042 [US5] Adicionar `clearLocalDataOnLogout(userId)` em `apps/mobile/src/features/auth/auth.queries.ts` — `useLogoutMutation.onSuccess`: chama `SQLiteShoppingListRepository.deleteAllForUser(userId)` e `SQLiteShoppingListItemRepository.deleteAllForUser(userId)` antes de navegar para login
 
 **Checkpoint**: Todas as 5 user stories completas e testáveis independentemente.
 
@@ -174,16 +174,16 @@ apps/mobile/tests/security/              # Testes de isolamento por user_id
 
 **Purpose**: Qualidade, validação de regressão, e preparação para Fase 3.
 
-- [ ] T043 Verificar que lista arquivada bloqueia adicionar/editar/remover offline: o use case `AddShoppingListItem` checa `status === 'archived'` via `LocalFirstShoppingListRepository.getDetails()` — testar manualmente abrindo lista arquivada sem internet e tentando adicionar item
-- [ ] T044 [P] Adicionar tratamento de erro SQLite em `SQLiteShoppingListItemRepository.ts` e `SQLiteShoppingListRepository.ts`: envolver operações de escrita em try/catch, mapear para `AppError` via `createAppError({ category: 'unexpected' })` do `apps/mobile/src/shared/errors/appError.ts`, logar com `logger.error`
-- [ ] T045 [P] Verificar que erros de Supabase nos métodos `syncCreate/syncUpdate/syncDelete` nunca propagam para a UI — devem ser capturados internamente, logados com `logger.warn`, e o item permanecer com `sync_status = 'error'` sem lançar exceção
-- [ ] T046 Rodar `pnpm typecheck` a partir da raiz do monorepo e corrigir todos os erros TypeScript introduzidos na Fase 2
-- [ ] T047 Rodar `pnpm lint` a partir da raiz do monorepo e corrigir todos os erros de lint introduzidos na Fase 2
-- [ ] T048 Rodar `pnpm --filter mobile test` e corrigir qualquer falha nos testes existentes causada pelas mudanças da Fase 2
-- [ ] T049 Teste manual de regressão: verificar que sessão persistente (Fase 1), edição de produto, campo marca, bloqueio em listas arquivadas e versionamento do app continuam funcionando após as mudanças
-- [ ] T050 Teste manual do fluxo completo: (1) criar item offline → fechar app → abrir offline → item aparece; (2) reativar internet → sync acontece → `sync_status` muda para `synced` → badge desaparece
-- [ ] T051 Rodar `pnpm mobile:start` e testar no simulador iOS/Android os cenários de `quickstart.md`
-- [ ] T052 [P] Registrar decisões técnicas da Fase 2 em `specs/006-sqlite-offline-first/plan.md` — seção de notas: uso de `globalThis.crypto.randomUUID()`, padrão fire-and-forget para sync, motivo de manter `price_history` e `user_events` apenas remotos, lista de items para a Fase 3 (retry robusto, reconciliação bidirecional, resolução de conflitos, limpeza de soft-deletes antigos)
+- [x] T043 Verificar que lista arquivada bloqueia adicionar/editar/remover offline: o use case `AddShoppingListItem` checa `status === 'archived'` via `LocalFirstShoppingListRepository.getDetails()` — testar manualmente abrindo lista arquivada sem internet e tentando adicionar item
+- [x] T044 [P] Adicionar tratamento de erro SQLite em `SQLiteShoppingListItemRepository.ts` e `SQLiteShoppingListRepository.ts`: envolver operações de escrita em try/catch, mapear para `AppError` via `createAppError({ category: 'unexpected' })` do `apps/mobile/src/shared/errors/appError.ts`, logar com `logger.error`
+- [x] T045 [P] Verificar que erros de Supabase nos métodos `syncCreate/syncUpdate/syncDelete` nunca propagam para a UI — devem ser capturados internamente, logados com `logger.warn`, e o item permanecer com `sync_status = 'error'` sem lançar exceção
+- [x] T046 Rodar `pnpm typecheck` a partir da raiz do monorepo e corrigir todos os erros TypeScript introduzidos na Fase 2
+- [x] T047 Rodar `pnpm lint` a partir da raiz do monorepo e corrigir todos os erros de lint introduzidos na Fase 2
+- [x] T048 Rodar `pnpm --filter mobile test` e corrigir qualquer falha nos testes existentes causada pelas mudanças da Fase 2
+- [x] T049 Teste manual de regressão: verificar que sessão persistente (Fase 1), edição de produto, campo marca, bloqueio em listas arquivadas e versionamento do app continuam funcionando após as mudanças
+- [x] T050 Teste manual do fluxo completo: (1) criar item offline → fechar app → abrir offline → item aparece; (2) reativar internet → sync acontece → `sync_status` muda para `synced` → badge desaparece
+- [x] T051 Rodar `pnpm mobile:start` e testar no simulador iOS/Android os cenários de `quickstart.md`
+- [x] T052 [P] Registrar decisões técnicas da Fase 2 em `specs/006-sqlite-offline-first/plan.md` — seção de notas: uso de `globalThis.crypto.randomUUID()`, padrão fire-and-forget para sync, motivo de manter `price_history` e `user_events` apenas remotos, lista de items para a Fase 3 (retry robusto, reconciliação bidirecional, resolução de conflitos, limpeza de soft-deletes antigos)
 
 ---
 

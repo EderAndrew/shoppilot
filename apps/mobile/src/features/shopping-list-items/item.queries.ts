@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   CheckShoppingListItem,
@@ -9,6 +9,8 @@ import type { AddShoppingListItemInput } from "@/application/ports/ShoppingListI
 import { queryKeys } from "@/application/query-keys/queryKeys";
 import { defaultRepositories } from "@/infrastructure/repositories/defaultRepositories";
 import { createAppError } from "@/shared/errors/appError";
+import { getDatabaseInstance } from "@/lib/db/database";
+import { SQLiteShoppingListItemRepository } from "@/infrastructure/local/SQLiteShoppingListItemRepository";
 
 const itemUseCases = {
   check: new CheckShoppingListItem(
@@ -95,6 +97,17 @@ export function useRemoveShoppingListItemMutation(listId: string) {
     mutationFn: (input: Parameters<typeof itemUseCases.remove.execute>[0]) =>
       itemUseCases.remove.execute(input),
     onSuccess: invalidateList,
+  });
+}
+
+export function usePendingSyncCountQuery(userId: string) {
+  return useQuery({
+    queryKey: queryKeys.shoppingLists.pendingCount(userId),
+    queryFn: () => {
+      const repo = new SQLiteShoppingListItemRepository(getDatabaseInstance());
+      return repo.countPendingSync(userId);
+    },
+    enabled: !!userId,
   });
 }
 
